@@ -1,0 +1,5 @@
+The DX Plugin Base plugin includes best practices and code snippets to create your own WordPress plugin.
+
+It's live on WordPress.org - http://wordpress.org/extend/plugins/dx-plugin-base/developers/  - and ready for an automatic install from the WordPress admin.
+
+Learn how to build custom post types and taxonomies, add metaboxes, include external JS/CSS files properly and much more.
