@@ -265,7 +265,7 @@ class DX_Plugin_Base {
 	 *
 	 */
 	function dx_on_activate() {
-		register_activation_hook( __FILE__, 'dx_on_activate_callback' );
+		register_activation_hook( __FILE__, array(&$this, 'dx_on_activate_callback') );
 	}
 	
 	function dx_on_activate_callback() {
@@ -277,7 +277,7 @@ class DX_Plugin_Base {
 	 * 
 	 */
 	function dx_on_deactivate() {
-		register_activation_hook( __FILE__, 'dx_on_deactivate_callback' );
+		register_deactivation_hook( __FILE__, array(&$this, 'dx_on_deactivate_callback') );
 	}
 	
 	function dx_on_deactivate_callback() {
