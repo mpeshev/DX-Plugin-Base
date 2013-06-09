@@ -45,6 +45,7 @@ define( 'DXP_URL_INCLUDES', DXP_URL . '/inc' );
  *
  */
 class DX_Plugin_Base {
+	
 	/**
 	 * 
 	 * Assign everything as a call from within the constructor
@@ -73,6 +74,9 @@ class DX_Plugin_Base {
 		// Register activation and deactivation hooks
 		register_activation_hook( __FILE__, 'dx_on_activate_callback' );
 		register_deactivation_hook( __FILE__, 'dx_on_deactivate_callback' );
+		
+		// Translation-ready
+		add_action( 'plugins_loaded', array( $this, 'dx_add_textdomain' ) );
 		
 		// Add earlier execution as it needs to occur before admin page display
 		add_action( 'admin_init', array( $this, 'dx_register_settings' ), 5 );
@@ -347,6 +351,13 @@ class DX_Plugin_Base {
 	 */
 	function dx_sample_widget() {
 		include_once DXP_PATH_INCLUDES . '/dx-sample-widget.class.php';
+	}
+	
+	/**
+	 * Add textdomain for plugin
+	 */
+	function dx_add_textdomain() {
+		load_plugin_textdomain( 'dxbase', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 	}
 	
 }
