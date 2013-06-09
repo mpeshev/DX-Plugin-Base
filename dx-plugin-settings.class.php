@@ -55,6 +55,7 @@ class DX_Plugin_Settings {
 	public function dx_opt_in_callback() {
 		$enabled = false;
 		$out = ''; 
+		$val = false;
 		
 		// check if checkbox is checked
 		if(! empty( $this->dx_setting ) && isset ( $this->dx_setting['dx_opt_in'] ) ) {
