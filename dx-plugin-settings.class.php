@@ -26,14 +26,14 @@ class DX_Plugin_Settings {
 		
 		add_settings_section(
 			'dx_settings_section',         // ID used to identify this section and with which to register options
-			'Enable DX Templates',                  // Title to be displayed on the administration page
+			__( "Enable DX Templates", 'dxbase' ),                  // Title to be displayed on the administration page
 			array($this, 'dx_settings_callback'), // Callback used to render the description of the section
 			'dx-plugin-base'                           // Page on which to add this section of options
 		);
 	
 		add_settings_field(
 			'dx_opt_in',                      // ID used to identify the field throughout the theme
-			__( 'Active: ', 'dxbase' ),                           // The label to the left of the option interface element
+			__( "Active: ", 'dxbase' ),                           // The label to the left of the option interface element
 			array( $this, 'dx_opt_in_callback' ),   // The name of the function responsible for rendering the option interface
 			'dx-plugin-base',                          // The page on which this option will be displayed
 			'dx_settings_section'         // The name of the section to which this field belongs
@@ -41,7 +41,7 @@ class DX_Plugin_Settings {
 		
 		add_settings_field(
 			'dx_sample_text',                      // ID used to identify the field throughout the theme
-			__( 'DX Sample: ', 'dxbase' ),                           // The label to the left of the option interface element
+			__( "DX Sample: ", 'dxbase' ),                           // The label to the left of the option interface element
 			array( $this, 'dx_sample_text_callback' ),   // The name of the function responsible for rendering the option interface
 			'dx-plugin-base',                          // The page on which this option will be displayed
 			'dx_settings_section'         // The name of the section to which this field belongs
@@ -49,7 +49,7 @@ class DX_Plugin_Settings {
 	}
 	
 	public function dx_settings_callback() {
-		echo _e( 'Enable me', 'dxbase' );
+		echo _e( "Enable me", 'dxbase' );
 	}
 	
 	public function dx_opt_in_callback() {

@@ -153,8 +153,8 @@ class DX_Plugin_Base {
 	 *  
 	 */
 	function dx_admin_pages_callback() {
-		add_menu_page('Plugin Base Admin', 'Plugin Base Admin', 'edit_themes', 'dx-plugin-base', array( $this, 'dx_plugin_base'));		
-		add_submenu_page( 'dx-plugin-base', 'Base Subpage', 'Base Subpage', 'edit_themes', 'dx-base-subpage', array( $this, 'dx_plugin_subpage'));
+		add_menu_page(__( "Plugin Base Admin", 'dxbase' ), __( "Plugin Base Admin", 'dxbase' ), 'edit_themes', 'dx-plugin-base', array( $this, 'dx_plugin_base'));		
+		add_submenu_page( 'dx-plugin-base', __( "Base Subpage", 'dxbase' ), __( "Base Subpage", 'dxbase' ), 'edit_themes', 'dx-base-subpage', array( $this, 'dx_plugin_subpage'));
 	}
 	
 	/**
@@ -191,7 +191,7 @@ class DX_Plugin_Base {
 		// register side box
 		add_meta_box( 
 		        'dx_side_meta_box',
-		        __( 'DX Side Box', 'dxbase' ),
+		        __( "DX Side Box", 'dxbase' ),
 		        array( $this, 'dx_side_meta_box' ),
 		        'page', // leave empty quotes as '' if you want it on all custom post add/edit screens
 		        'side',
@@ -201,7 +201,7 @@ class DX_Plugin_Base {
 		// register bottom box
 		add_meta_box(
 		    	'dx_bottom_meta_box',
-		    	__( 'DX Bottom Box', 'dxbase' ), 
+		    	__( "DX Bottom Box", 'dxbase' ), 
 		    	array( $this, 'dx_bottom_meta_box' ),
 		    	'' // leave empty quotes as '' if you want it on all custom post add/edit screens or add a post type slug
 		    );
@@ -214,7 +214,7 @@ class DX_Plugin_Base {
 	 * @param metabox $metabox metabox data
 	 */
 	function dx_side_meta_box($post, $metabox) {
-		_e('<p>Side meta content here</p>', 'dxbase');
+		_e("<p>Side meta content here</p>", 'dxbase');
 	}
 	
 	/**
@@ -224,7 +224,7 @@ class DX_Plugin_Base {
 	 * @param metabox $metabox metabox data
 	 */
 	function dx_bottom_meta_box($post, $metabox) {
-		_e( '<p>Bottom meta content here</p>', 'dxbase' );
+		_e( "<p>Bottom meta content here</p>", 'dxbase' );
 	}
 	
 	/**
@@ -234,18 +234,18 @@ class DX_Plugin_Base {
 	function dx_custom_post_types_callback() {
 		register_post_type( 'pluginbase', array(
 			'labels' => array(
-				'name' => __('Base Items', 'dxbase'),
-				'singular_name' => __('Base Item', 'dxbase'),
-				'add_new' => _x('Add New', 'pluginbase', 'dxbase' ),
-				'add_new_item' => __('Add New Base Item', 'dxbase' ),
-				'edit_item' => __('Edit Base Item', 'dxbase' ),
-				'new_item' => __('New Base Item', 'dxbase' ),
-				'view_item' => __('View Base Item', 'dxbase' ),
-				'search_items' => __('Search Base Items', 'dxbase' ),
-				'not_found' =>  __('No base items found', 'dxbase' ),
-				'not_found_in_trash' => __('No base items found in Trash', 'dxbase' ),
+				'name' => __("Base Items", 'dxbase'),
+				'singular_name' => __("Base Item", 'dxbase'),
+				'add_new' => _x("Add New", 'pluginbase', 'dxbase' ),
+				'add_new_item' => __("Add New Base Item", 'dxbase' ),
+				'edit_item' => __("Edit Base Item", 'dxbase' ),
+				'new_item' => __("New Base Item", 'dxbase' ),
+				'view_item' => __("View Base Item", 'dxbase' ),
+				'search_items' => __("Search Base Items", 'dxbase' ),
+				'not_found' =>  __("No base items found", 'dxbase' ),
+				'not_found_in_trash' => __("No base items found in Trash", 'dxbase' ),
 			),
-			'description' => __('Base Items for the demo', 'dxbase'),
+			'description' => __("Base Items for the demo", 'dxbase'),
 			'public' => true,
 			'publicly_queryable' => true,
 			'query_var' => true,
@@ -274,20 +274,20 @@ class DX_Plugin_Base {
 		register_taxonomy( 'pluginbase_taxonomy', 'pluginbase', array(
 			'hierarchical' => true,
 			'labels' => array(
-				'name' => _x( 'Base Item Taxonomies', 'taxonomy general name', 'dxbase' ),
-				'singular_name' => _x( 'Base Item Taxonomy', 'taxonomy singular name', 'dxbase' ),
-				'search_items' =>  __( 'Search Taxonomies', 'dxbase' ),
-				'popular_items' => __( 'Popular Taxonomies', 'dxbase' ),
-				'all_items' => __( 'All Taxonomies', 'dxbase' ),
+				'name' => _x( "Base Item Taxonomies", 'taxonomy general name', 'dxbase' ),
+				'singular_name' => _x( "Base Item Taxonomy", 'taxonomy singular name', 'dxbase' ),
+				'search_items' =>  __( "Search Taxonomies", 'dxbase' ),
+				'popular_items' => __( "Popular Taxonomies", 'dxbase' ),
+				'all_items' => __( "All Taxonomies", 'dxbase' ),
 				'parent_item' => null,
 				'parent_item_colon' => null,
-				'edit_item' => __( 'Edit Base Item Taxonomy', 'dxbase' ), 
-				'update_item' => __( 'Update Base Item Taxonomy', 'dxbase' ),
-				'add_new_item' => __( 'Add New Base Item Taxonomy', 'dxbase' ),
-				'new_item_name' => __( 'New Base Item Taxonomy Name', 'dxbase' ),
-				'separate_items_with_commas' => __( 'Separate Base Item taxonomies with commas', 'dxbase' ),
-				'add_or_remove_items' => __( 'Add or remove Base Item taxonomy', 'dxbase' ),
-				'choose_from_most_used' => __( 'Choose from the most used Base Item taxonomies', 'dxbase' )
+				'edit_item' => __( "Edit Base Item Taxonomy", 'dxbase' ), 
+				'update_item' => __( "Update Base Item Taxonomy", 'dxbase' ),
+				'add_new_item' => __( "Add New Base Item Taxonomy", 'dxbase' ),
+				'new_item_name' => __( "New Base Item Taxonomy Name", 'dxbase' ),
+				'separate_items_with_commas' => __( "Separate Base Item taxonomies with commas", 'dxbase' ),
+				'add_or_remove_items' => __( "Add or remove Base Item taxonomy", 'dxbase' ),
+				'choose_from_most_used' => __( "Choose from the most used Base Item taxonomies", 'dxbase' )
 			),
 			'show_ui' => true,
 			'query_var' => true,
