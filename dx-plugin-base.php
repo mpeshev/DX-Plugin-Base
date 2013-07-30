@@ -4,7 +4,7 @@
  * Plugin URI: http://example.org/
  * Author: nofearinc
  * Author URI: http://devwp.eu/
- * Version: 1.1
+ * Version: 1.2
  * Text Domain: dx-sample-plugin
  * License: GPL2
 
@@ -29,7 +29,7 @@
  * 
  */
 
-define( 'DXP_VERSION', '1.1' );
+define( 'DXP_VERSION', '1.2' );
 define( 'DXP_PATH', dirname( __FILE__ ) );
 define( 'DXP_PATH_INCLUDES', dirname( __FILE__ ) . '/inc' );
 define( 'DXP_FOLDER', basename( DXP_PATH ) );
@@ -298,22 +298,6 @@ class DX_Plugin_Base {
 	}
 	
 	/**
-	 * Register activation hook
-	 *
-	 */
-	function dx_on_activate_callback() {
-		// do something on activation
-	}
-	
-	/**
-	 * Register deactivation hook
-	 * 
-	 */
-	function dx_on_deactivate_callback() {
-		// do something when deactivated
-	}
-	
-	/**
 	 * Initialize the Settings class
 	 * 
 	 * Register a settings section with a field for a secure WordPress admin option creation.
@@ -359,7 +343,23 @@ class DX_Plugin_Base {
 	function dx_add_textdomain() {
 		load_plugin_textdomain( 'dxbase', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 	}
-	
+}
+
+
+/**
+ * Register activation hook
+ *
+ */
+function dx_on_activate_callback() {
+	// do something on activation
+}
+
+/**
+ * Register deactivation hook
+ *
+ */
+function dx_on_deactivate_callback() {
+	// do something when deactivated
 }
 
 // Initialize everything
