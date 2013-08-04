@@ -72,8 +72,8 @@ class DX_Plugin_Base {
 		add_action( 'init', array( $this, 'dx_custom_taxonomies_callback' ), 6 );
 		
 		// Register activation and deactivation hooks
-		register_activation_hook( __FILE__, 'dx_on_activate_callback' );
-		register_deactivation_hook( __FILE__, 'dx_on_deactivate_callback' );
+		register_activation_hook( __FILE__, array( $this, 'dx_on_activate_callback' ) );
+		register_deactivation_hook( __FILE__, array( $this, 'dx_on_deactivate_callback' ) );
 		
 		// Translation-ready
 		add_action( 'plugins_loaded', array( $this, 'dx_add_textdomain' ) );
