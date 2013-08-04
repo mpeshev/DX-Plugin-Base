@@ -1,3 +1,22 @@
 @CHARSET "UTF-8";
 
 /* Sample CSS styles below */
+body.plugin-base-admin_page_dx-remote-subpage h3 {
+	margin: 20px 0;
+}
+
+#dx_page_messages {
+	width: 100%;
+	background-color: yellow;
+	margin-bottom: 20px;
+}
+
+#resource-window {
+	margin-top: 50px;
+	background-color: #DDD;
+	font-size: 19px;
+}
+
+#resource-window p {
+	padding: 20px;
+}

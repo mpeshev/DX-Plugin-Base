@@ -94,6 +94,11 @@ class DX_Plugin_Base {
 		 * 		template_redirect
 		 */
 		
+		// Add actions for storing value and fetching URL
+		// use the wp_ajax_nopriv_ hook for non-logged users (handle guest actions)
+ 		add_action( 'wp_ajax_store_ajax_value', array( $this, 'store_ajax_value' ) );
+ 		add_action( 'wp_ajax_fetch_ajax_url_http', array( $this, 'fetch_ajax_url_http' ) );
+		
 		// TODO: add some filters so that this may not be edited at all but hooked instead
 	}	
 	
@@ -153,8 +158,9 @@ class DX_Plugin_Base {
 	 *  
 	 */
 	function dx_admin_pages_callback() {
-		add_menu_page(__( "Plugin Base Admin", 'dxbase' ), __( "Plugin Base Admin", 'dxbase' ), 'edit_themes', 'dx-plugin-base', array( $this, 'dx_plugin_base'));		
-		add_submenu_page( 'dx-plugin-base', __( "Base Subpage", 'dxbase' ), __( "Base Subpage", 'dxbase' ), 'edit_themes', 'dx-base-subpage', array( $this, 'dx_plugin_subpage'));
+		add_menu_page(__( "Plugin Base Admin", 'dxbase' ), __( "Plugin Base Admin", 'dxbase' ), 'edit_themes', 'dx-plugin-base', array( $this, 'dx_plugin_base' ) );		
+		add_submenu_page( 'dx-plugin-base', __( "Base Subpage", 'dxbase' ), __( "Base Subpage", 'dxbase' ), 'edit_themes', 'dx-base-subpage', array( $this, 'dx_plugin_subpage' ) );
+		add_submenu_page( 'dx-plugin-base', __( "Remote Subpage", 'dxbase' ), __( "Remote Subpage", 'dxbase' ), 'edit_themes', 'dx-remote-subpage', array( $this, 'dx_plugin_side_access_page' ) );
 	}
 	
 	/**
@@ -164,6 +170,10 @@ class DX_Plugin_Base {
 	 */
 	function dx_plugin_base() {
 		include_once( DXP_PATH_INCLUDES . '/base-page-template.php' );
+	}
+	
+	function dx_plugin_side_access_page() {
+		include_once( DXP_PATH_INCLUDES . '/remote-page-template.php' );
 	}
 	
 	/**
@@ -343,6 +353,37 @@ class DX_Plugin_Base {
 	function dx_add_textdomain() {
 		load_plugin_textdomain( 'dxbase', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 	}
+	
+	/**
+	 * Callback for saving a simple AJAX option with no page reload
+	 */
+	function store_ajax_value() {
+		if( isset( $_POST['data'] ) && isset( $_POST['data']['dx_option_from_ajax'] ) ) {
+			update_option( 'dx_option_from_ajax' , $_POST['data']['dx_option_from_ajax'] );
+		}	
+		die();
+	}
+	
+	/**
+	 * Callback for getting a URL and fetching it's content in the admin page
+	 */
+	function fetch_ajax_url_http() {
+		if( isset( $_POST['data'] ) && isset( $_POST['data']['dx_url_for_ajax'] ) ) {
+			$ajax_url = $_POST['data']['dx_url_for_ajax'];
+			
+			$response = wp_remote_get( $ajax_url );
+			
+			if( isset( $response['body'] ) ) {
+				if( preg_match( '/<title>(.*)<\/title>/', $response['body'], $matches ) ) {
+					echo json_encode( $matches[1] );
+					die();
+				}
+			}
+		}
+		echo json_encode( __( 'No title found or site was not fetched properly', 'dxbase' ) );
+		die();
+	}
+	
 }
 
 
