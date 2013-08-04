@@ -2,8 +2,8 @@
 Contributors: nofearinc
 Tags: plugin, base, startup, skeleton, stub
 Requires at least: 3.1
-Tested up to: 3.4.2
-Stable tag: 1.1
+Tested up to: 3.6
+Stable tag: 1.2
 License: GPLv2 or later
 
 Startup plugin code for new plugin, including the archetype of standard features, admin and core functions to be used in new plugins.
