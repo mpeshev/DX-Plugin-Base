@@ -35,8 +35,8 @@ class DX_Sample_Widget extends WP_Widget {
         // Start sample widget body creation with output code (get arguments from options and output something)
         
         $out = '<p>Widget body<p>';
-		$out .= isset( $instance['sample_text'] ) ? '<p>Sample text: '. $instance['sample_text'] . '</p>' : '';
-		$out .= isset( $instance['sample_dropdown'] ) ? '<p>Sample dropdown: '.  $instance['sample_dropdown'] . '</p>' : '';
+		$out .= '<p>Sample text: '. $instance['sample_text'] . '</p>';
+		$out .= '<p>Sample dropdown: '.  $instance['sample_dropdown'] . '</p>';
         
         // End sample widget body creation
         
@@ -73,6 +73,13 @@ class DX_Sample_Widget extends WP_Widget {
      * Widget Form
      */
     public function form ( $instance ) {
+		$instance_defaults = array(
+				'title' => 'Instance title',
+				'sample_text' => '',
+				'sample_dropdown' => '',
+		);
+
+		$instance = array_merge( $instance, $instance_defaults );
 
         $title = esc_attr( $instance[ 'title' ] );
         $sample_text = esc_attr( $instance[ 'sample_text' ] );
