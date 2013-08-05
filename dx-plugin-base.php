@@ -4,7 +4,7 @@
  * Plugin URI: http://example.org/
  * Author: nofearinc
  * Author URI: http://devwp.eu/
- * Version: 1.2
+ * Version: 1.3
  * Text Domain: dx-sample-plugin
  * License: GPL2
 
@@ -29,7 +29,7 @@
  * 
  */
 
-define( 'DXP_VERSION', '1.2' );
+define( 'DXP_VERSION', '1.3' );
 define( 'DXP_PATH', dirname( __FILE__ ) );
 define( 'DXP_PATH_INCLUDES', dirname( __FILE__ ) . '/inc' );
 define( 'DXP_FOLDER', basename( DXP_PATH ) );

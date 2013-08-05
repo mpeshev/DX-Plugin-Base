@@ -21,6 +21,8 @@ It serves as a startup code providing reference and working codebase for:
 * adding metaboxes on pages
 * creating sample shortcode
 * creating sample widget
+* creating AJAX requests storing sample data in the database
+* creating AJAX requests for fetching remote data with the HTTP API
 * adding frontend styles/scripts the right way
 * adding admin styles/scripts the right way
 * defining common constants for further use
@@ -43,3 +45,16 @@ Extend or comment whenever appropriate based on your assignment.
 Yes, it is, as well as with the latest PHP. 
 
 I've removed the 'pass-by-reference' call for all array( $this, ... ) entries as it's deprecated since 5.3.0. If you happen to use 5.2.4, you can replace all $this in arrays with &$this or better update PHP version.
+
+== Changelog ==
+
+= 1.3 =
+* Add page with AJAX options
+* Introduce AJAX call for storing data to DB
+* Introduce AJAX call to fetch title from remote HTTP resouce
+
+= 1.2 =
+* Fix small issues and prevent some unexpected activities
+
+= 1.0 =
+* Initial commit
