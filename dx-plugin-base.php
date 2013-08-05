@@ -373,6 +373,11 @@ class DX_Plugin_Base {
 			
 			$response = wp_remote_get( $ajax_url );
 			
+			if( is_wp_error( $response ) ) {
+				echo json_encode( __( 'Invalid HTTP resource', 'dxbase' ) );
+				die();
+			}
+			
 			if( isset( $response['body'] ) ) {
 				if( preg_match( '/<title>(.*)<\/title>/', $response['body'], $matches ) ) {
 					echo json_encode( $matches[1] );
