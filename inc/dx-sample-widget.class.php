@@ -79,7 +79,7 @@ class DX_Sample_Widget extends WP_Widget {
 				'sample_dropdown' => '',
 		);
 
-		$instance = array_merge( $instance, $instance_defaults );
+		$instance = wp_parse_args( $instance, $instance_defaults );
 
         $title = esc_attr( $instance[ 'title' ] );
         $sample_text = esc_attr( $instance[ 'sample_text' ] );
