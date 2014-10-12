@@ -1,9 +1,9 @@
 === DX Plugin Base ===
-Contributors: nofearinc
-Tags: plugin, base, startup, skeleton, stub
+Contributors: nofearinc, devrix
+Tags: plugin, base, startup, framework, foundation, skeleton, backbone, sample, example
 Requires at least: 3.1
-Tested up to: 3.6
-Stable tag: 1.2
+Tested up to: 4.0
+Stable tag: 1.4
 License: GPLv2 or later
 
 Startup plugin code for new plugin, including the archetype of standard features, admin and core functions to be used in new plugins.
@@ -47,6 +47,9 @@ Yes, it is, as well as with the latest PHP.
 I've removed the 'pass-by-reference' call for all array( $this, ... ) entries as it's deprecated since 5.3.0. If you happen to use 5.2.4, you can replace all $this in arrays with &$this or better update PHP version.
 
 == Changelog ==
+
+= 1.4 =
+* Refreshing
 
 = 1.3 =
 * Add page with AJAX options

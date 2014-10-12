@@ -4,7 +4,7 @@
  * Plugin URI: http://example.org/
  * Author: nofearinc
  * Author URI: http://devwp.eu/
- * Version: 1.3
+ * Version: 1.4
  * Text Domain: dx-sample-plugin
  * License: GPL2
 
@@ -29,7 +29,7 @@
  * 
  */
 
-define( 'DXP_VERSION', '1.3' );
+define( 'DXP_VERSION', '1.4' );
 define( 'DXP_PATH', dirname( __FILE__ ) );
 define( 'DXP_PATH_INCLUDES', dirname( __FILE__ ) . '/inc' );
 define( 'DXP_FOLDER', basename( DXP_PATH ) );
@@ -145,9 +145,14 @@ class DX_Plugin_Base {
 	 * Add admin CSS styles - available only on admin
 	 *
 	 */
-	function dx_add_admin_CSS() {
+	function dx_add_admin_CSS( $hook ) {
 		wp_register_style( 'samplestyle-admin', plugins_url( '/css/samplestyle-admin.css', __FILE__ ), array(), '1.0', 'screen' );
 		wp_enqueue_style( 'samplestyle-admin' );
+		
+		if( 'toplevel_page_dx-plugin-base' === $hook ) {
+			wp_register_style('dx_help_page',  plugins_url( '/help-page.css', __FILE__ ) );
+			wp_enqueue_style('dx_help_page');
+		}
 	}
 	
 	/**
