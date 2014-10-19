@@ -67,6 +67,9 @@ class DX_Plugin_Base {
 		// register meta boxes for Pages (could be replicated for posts and custom post types)
 		add_action( 'add_meta_boxes', array( $this, 'dx_meta_boxes_callback' ) );
 		
+		// register save_post hooks for saving the custom fields
+		add_action( 'save_post', array( $this, 'dx_save_sample_field' ) );
+		
 		// Register custom post types and taxonomies
 		add_action( 'init', array( $this, 'dx_custom_post_types_callback' ), 5 );
 		add_action( 'init', array( $this, 'dx_custom_taxonomies_callback' ), 6 );
@@ -89,8 +92,6 @@ class DX_Plugin_Base {
 		
 		/*
 		 * TODO:
-		 * 		AJAX calls
-		 * 		HTTP request
 		 * 		template_redirect
 		 */
 		
@@ -99,7 +100,6 @@ class DX_Plugin_Base {
  		add_action( 'wp_ajax_store_ajax_value', array( $this, 'store_ajax_value' ) );
  		add_action( 'wp_ajax_fetch_ajax_url_http', array( $this, 'fetch_ajax_url_http' ) );
 		
-		// TODO: add some filters so that this may not be edited at all but hooked instead
 	}	
 	
 	/**
@@ -208,7 +208,7 @@ class DX_Plugin_Base {
 		        'dx_side_meta_box',
 		        __( "DX Side Box", 'dxbase' ),
 		        array( $this, 'dx_side_meta_box' ),
-		        'page', // leave empty quotes as '' if you want it on all custom post add/edit screens
+		        'pluginbase', // leave empty quotes as '' if you want it on all custom post add/edit screens
 		        'side',
 		        'high'
 		    );
@@ -228,8 +228,44 @@ class DX_Plugin_Base {
 	 * @param post $post the post object of the given page 
 	 * @param metabox $metabox metabox data
 	 */
-	function dx_side_meta_box($post, $metabox) {
+	function dx_side_meta_box( $post, $metabox) {
 		_e("<p>Side meta content here</p>", 'dxbase');
+		
+		// Add some test data here - a custom field, that is
+		$dx_test_input = '';
+		if ( ! empty ( $post ) ) {
+			// Read the database record if we've saved that before
+			$dx_test_input = get_post_meta( $post->ID, 'dx_test_input', true );
+		}
+		?>
+		<label for="dx-test-input"><?php _e( 'Test Custom Field', 'dxbase' ); ?></label>
+		<input type="text" id="dx-test-input" name="dx_test_input" value="<?php echo $dx_test_input; ?>" />
+		<?php
+	}
+	
+	/**
+	 * Save the custom field from the side metabox
+	 * @param $post_id the current post ID
+	 * @return post_id the post ID from the input arguments
+	 * 
+	 */
+	function dx_save_sample_field( $post_id ) {
+		// Avoid autosaves
+		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		$slug = 'pluginbase';
+		// If this isn't a 'book' post, don't update it.
+		if ( $slug != $_POST['post_type'] ) {
+			return;
+		}
+		
+		// If the custom field is found, update the postmeta record
+		// Also, filter the HTML just to be safe
+		if ( isset( $_POST['dx_test_input']  ) ) {
+			update_post_meta( $post_id, 'dx_test_input',  esc_html( $_POST['dx_test_input'] ) );
+		}
 	}
 	
 	/**
@@ -238,7 +274,7 @@ class DX_Plugin_Base {
 	 * @param post $post the post object of the given page 
 	 * @param metabox $metabox metabox data
 	 */
-	function dx_bottom_meta_box($post, $metabox) {
+	function dx_bottom_meta_box( $post, $metabox) {
 		_e( "<p>Bottom meta content here</p>", 'dxbase' );
 	}
 	
