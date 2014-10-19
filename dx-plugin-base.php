@@ -50,7 +50,7 @@ class DX_Plugin_Base {
 	 * 
 	 * Assign everything as a call from within the constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		// add script and style calls the WP way 
 		// it's a bit confusing as styles are called with a scripts hook
 		// @blamenacin - http://make.wordpress.org/core/2011/12/12/use-wp_enqueue_scripts-not-wp_print_styles-to-enqueue-scripts-and-styles-for-the-frontend/
@@ -109,7 +109,7 @@ class DX_Plugin_Base {
 	 * Loading existing scripts from wp-includes or adding custom ones
 	 * 
 	 */
-	function dx_add_JS() {
+	public function dx_add_JS() {
 		wp_enqueue_script( 'jquery' );
 		// load custom JSes and put them in footer
 		wp_register_script( 'samplescript', plugins_url( '/js/samplescript.js' , __FILE__ ), array('jquery'), '1.0', true );
@@ -124,7 +124,7 @@ class DX_Plugin_Base {
 	 * Loading existing scripts from wp-includes or adding custom ones
 	 *
 	 */
-	function dx_add_admin_JS() {
+	public function dx_add_admin_JS() {
 		wp_enqueue_script( 'jquery' );
 		wp_register_script( 'samplescript-admin', plugins_url( '/js/samplescript-admin.js' , __FILE__ ), array('jquery'), '1.0', true );
 		wp_enqueue_script( 'samplescript-admin' );
@@ -135,7 +135,7 @@ class DX_Plugin_Base {
 	 * Add CSS styles
 	 * 
 	 */
-	function dx_add_CSS() {
+	public function dx_add_CSS() {
 		wp_register_style( 'samplestyle', plugins_url( '/css/samplestyle.css', __FILE__ ), array(), '1.0', 'screen' );
 		wp_enqueue_style( 'samplestyle' );
 	}
@@ -145,7 +145,7 @@ class DX_Plugin_Base {
 	 * Add admin CSS styles - available only on admin
 	 *
 	 */
-	function dx_add_admin_CSS( $hook ) {
+	public function dx_add_admin_CSS( $hook ) {
 		wp_register_style( 'samplestyle-admin', plugins_url( '/css/samplestyle-admin.css', __FILE__ ), array(), '1.0', 'screen' );
 		wp_enqueue_style( 'samplestyle-admin' );
 		
@@ -162,7 +162,7 @@ class DX_Plugin_Base {
 	 * This demo registers a custom page for the plugin and a subpage
 	 *  
 	 */
-	function dx_admin_pages_callback() {
+	public function dx_admin_pages_callback() {
 		add_menu_page(__( "Plugin Base Admin", 'dxbase' ), __( "Plugin Base Admin", 'dxbase' ), 'edit_themes', 'dx-plugin-base', array( $this, 'dx_plugin_base' ) );		
 		add_submenu_page( 'dx-plugin-base', __( "Base Subpage", 'dxbase' ), __( "Base Subpage", 'dxbase' ), 'edit_themes', 'dx-base-subpage', array( $this, 'dx_plugin_subpage' ) );
 		add_submenu_page( 'dx-plugin-base', __( "Remote Subpage", 'dxbase' ), __( "Remote Subpage", 'dxbase' ), 'edit_themes', 'dx-remote-subpage', array( $this, 'dx_plugin_side_access_page' ) );
@@ -173,11 +173,11 @@ class DX_Plugin_Base {
 	 * The content of the base page
 	 * 
 	 */
-	function dx_plugin_base() {
+	public function dx_plugin_base() {
 		include_once( DXP_PATH_INCLUDES . '/base-page-template.php' );
 	}
 	
-	function dx_plugin_side_access_page() {
+	public function dx_plugin_side_access_page() {
 		include_once( DXP_PATH_INCLUDES . '/remote-page-template.php' );
 	}
 	
@@ -190,7 +190,7 @@ class DX_Plugin_Base {
 	 * @see http://www.onextrapixel.com/2009/07/01/how-to-design-and-style-your-wordpress-plugin-admin-panel/
 	 *
 	 */
-	function dx_plugin_subpage() {
+	public function dx_plugin_subpage() {
 		echo '<div class="wrap">';
 		_e( "<h2>DX Plugin Subpage</h2> ", 'dxbase' );
 		_e( "I'm a subpage and I know it!", 'dxbase' );
@@ -202,7 +202,7 @@ class DX_Plugin_Base {
 	 *  Adding right and bottom meta boxes to Pages
 	 *   
 	 */
-	function dx_meta_boxes_callback() {
+	public function dx_meta_boxes_callback() {
 		// register side box
 		add_meta_box( 
 		        'dx_side_meta_box',
@@ -228,7 +228,7 @@ class DX_Plugin_Base {
 	 * @param post $post the post object of the given page 
 	 * @param metabox $metabox metabox data
 	 */
-	function dx_side_meta_box( $post, $metabox) {
+	public function dx_side_meta_box( $post, $metabox) {
 		_e("<p>Side meta content here</p>", 'dxbase');
 		
 		// Add some test data here - a custom field, that is
@@ -249,7 +249,7 @@ class DX_Plugin_Base {
 	 * @return post_id the post ID from the input arguments
 	 * 
 	 */
-	function dx_save_sample_field( $post_id ) {
+	public function dx_save_sample_field( $post_id ) {
 		// Avoid autosaves
 		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
@@ -274,7 +274,7 @@ class DX_Plugin_Base {
 	 * @param post $post the post object of the given page 
 	 * @param metabox $metabox metabox data
 	 */
-	function dx_bottom_meta_box( $post, $metabox) {
+	public function dx_bottom_meta_box( $post, $metabox) {
 		_e( "<p>Bottom meta content here</p>", 'dxbase' );
 	}
 	
@@ -282,7 +282,7 @@ class DX_Plugin_Base {
 	 * Register custom post types
      *
 	 */
-	function dx_custom_post_types_callback() {
+	public function dx_custom_post_types_callback() {
 		register_post_type( 'pluginbase', array(
 			'labels' => array(
 				'name' => __("Base Items", 'dxbase'),
@@ -321,7 +321,7 @@ class DX_Plugin_Base {
 	 * Register custom taxonomies
      *
 	 */
-	function dx_custom_taxonomies_callback() {
+	public function dx_custom_taxonomies_callback() {
 		register_taxonomy( 'pluginbase_taxonomy', 'pluginbase', array(
 			'hierarchical' => true,
 			'labels' => array(
@@ -354,7 +354,7 @@ class DX_Plugin_Base {
 	 * Register a settings section with a field for a secure WordPress admin option creation.
 	 * 
 	 */
-	function dx_register_settings() {
+	public function dx_register_settings() {
 		require_once( DXP_PATH . '/dx-plugin-settings.class.php' );
 		new DX_Plugin_Settings();
 	}
@@ -365,7 +365,7 @@ class DX_Plugin_Base {
 	 * First parameter is the shortcode name, would be used like: [dxsampcode]
 	 * 
 	 */
-	function dx_sample_shortcode() {
+	public function dx_sample_shortcode() {
 		add_shortcode( 'dxsampcode', array( $this, 'dx_sample_shortcode_body' ) );
 	}
 	
@@ -374,7 +374,7 @@ class DX_Plugin_Base {
 	 * @param array $attr arguments passed to array, like [dxsamcode attr1="one" attr2="two"]
 	 * @param string $content optional, could be used for a content to be wrapped, such as [dxsamcode]somecontnet[/dxsamcode]
 	 */
-	function dx_sample_shortcode_body( $attr, $content = null ) {
+	public function dx_sample_shortcode_body( $attr, $content = null ) {
 		/*
 		 * Manage the attributes and the content as per your request and return the result
 		 */
@@ -384,21 +384,21 @@ class DX_Plugin_Base {
 	/**
 	 * Hook for including a sample widget with options
 	 */
-	function dx_sample_widget() {
+	public function dx_sample_widget() {
 		include_once DXP_PATH_INCLUDES . '/dx-sample-widget.class.php';
 	}
 	
 	/**
 	 * Add textdomain for plugin
 	 */
-	function dx_add_textdomain() {
+	public function dx_add_textdomain() {
 		load_plugin_textdomain( 'dxbase', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 	}
 	
 	/**
 	 * Callback for saving a simple AJAX option with no page reload
 	 */
-	function store_ajax_value() {
+	public function store_ajax_value() {
 		if( isset( $_POST['data'] ) && isset( $_POST['data']['dx_option_from_ajax'] ) ) {
 			update_option( 'dx_option_from_ajax' , $_POST['data']['dx_option_from_ajax'] );
 		}	
@@ -408,7 +408,7 @@ class DX_Plugin_Base {
 	/**
 	 * Callback for getting a URL and fetching it's content in the admin page
 	 */
-	function fetch_ajax_url_http() {
+	public function fetch_ajax_url_http() {
 		if( isset( $_POST['data'] ) && isset( $_POST['data']['dx_url_for_ajax'] ) ) {
 			$ajax_url = $_POST['data']['dx_url_for_ajax'];
 			
