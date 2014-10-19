@@ -29,7 +29,7 @@
  * 
  */
 
-define( 'DXP_VERSION', '1.4' );
+define( 'DXP_VERSION', '1.5' );
 define( 'DXP_PATH', dirname( __FILE__ ) );
 define( 'DXP_PATH_INCLUDES', dirname( __FILE__ ) . '/inc' );
 define( 'DXP_FOLDER', basename( DXP_PATH ) );

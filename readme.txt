@@ -3,7 +3,7 @@ Contributors: nofearinc, devrix
 Tags: plugin, base, startup, framework, foundation, skeleton, backbone, sample, example
 Requires at least: 3.1
 Tested up to: 4.0
-Stable tag: 1.4
+Stable tag: 1.5
 License: GPLv2 or later
 
 Startup plugin code for new plugin, including the archetype of standard features, admin and core functions to be used in new plugins.
@@ -47,6 +47,10 @@ Yes, it is, as well as with the latest PHP.
 I've removed the 'pass-by-reference' call for all array( $this, ... ) entries as it's deprecated since 5.3.0. If you happen to use 5.2.4, you can replace all $this in arrays with &$this or better update PHP version.
 
 == Changelog ==
+
+= 1.5 =
+* Add custom fields to metaboxes
+* Save custom fields
 
 = 1.4 =
 * Refreshing
