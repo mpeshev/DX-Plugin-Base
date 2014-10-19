@@ -257,7 +257,7 @@ class DX_Plugin_Base {
 
 		$slug = 'pluginbase';
 		// If this isn't a 'book' post, don't update it.
-		if ( $slug != $_POST['post_type'] ) {
+		if ( ! isset( $_POST['post_type'] ) || $slug != $_POST['post_type'] ) {
 			return;
 		}
 		
