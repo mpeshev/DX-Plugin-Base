@@ -4,7 +4,7 @@
  * Plugin URI: http://example.org/
  * Author: nofearinc
  * Author URI: http://devwp.eu/
- * Version: 1.4
+ * Version: 1.5
  * Text Domain: dx-sample-plugin
  * License: GPL2
 
