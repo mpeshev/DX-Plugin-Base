@@ -109,11 +109,178 @@ It's up to you what would you hook exactly and what would be the capabilities re
 
 ### Registering Post Types
 
+Creating new content types in WordPress is fairly easy - it requires registering new post types for each data collection. Since it's a global action that's used across the entire site, we need to register it with the `init` hook:
+
+```php
+		add_action( 'init', array( $this, dx_custom_post_types_callback' ), 5 );
+```
+
+The function responsible for the registration has plenty of options to play with, in terms of labels, capabilities, visibility control and so forth. An example is:
+
+```php
+	public function dx_custom_post_types_callback() {
+		register_post_type( 'pluginbase', array(
+			'labels' => array(
+				'name' => __("Base Items", 'dxbase'),
+				'singular_name' => __("Base Item", 'dxbase'),
+				'add_new' => _x("Add New", 'pluginbase', 'dxbase' ),
+				'add_new_item' => __("Add New Base Item", 'dxbase' ),
+				'edit_item' => __("Edit Base Item", 'dxbase' ),
+				'new_item' => __("New Base Item", 'dxbase' ),
+				'view_item' => __("View Base Item", 'dxbase' ),
+				'search_items' => __("Search Base Items", 'dxbase' ),
+				'not_found' =>  __("No base items found", 'dxbase' ),
+				'not_found_in_trash' => __("No base items found in Trash", 'dxbase' ),
+			),
+			'description' => __("Base Items for the demo", 'dxbase'),
+			'public' => true,
+			'publicly_queryable' => true,
+			'query_var' => true,
+			'rewrite' => true,
+			'exclude_from_search' => true,
+			'show_ui' => true,
+			'show_in_menu' => true,
+			'menu_position' => 40, 
+			'supports' => array(
+				'title',
+				'editor',
+				'thumbnail',
+				'custom-fields',
+				'page-attributes',
+			),
+			'taxonomies' => array( 'post_tag' )
+		));	
+	}
+```
+
+The base item here is a random name for your entry type, which may as well be a Product, House or something else.
+
 ### Registering Taxonomies
+
+Grouping content entries by criteria is possible with Categories and Tags in a default WordPress install. We can create other Custom Taxonomy entries for things such as Cities, Colors, Number of Bedrooms or other enumerable and classifiable entries.
+
+We should hook them up at an `init` hook as well:
+
+```php
+    add_action( 'init', array( $this, 'dx_custom_taxonomies_callback' ), 6 );
+```
+
+Then, our callback is registering the custom taxonomy and binds it so a custom post type:
+
+```php
+	public function dx_custom_taxonomies_callback() {
+		register_taxonomy( 'pluginbase_taxonomy', 'pluginbase', array(
+			'hierarchical' => true,
+			'labels' => array(
+				'name' => _x( "Base Item Taxonomies", 'taxonomy general name', 'dxbase' ),
+				'singular_name' => _x( "Base Item Taxonomy", 'taxonomy singular name', 'dxbase' ),
+				'search_items' =>  __( "Search Taxonomies", 'dxbase' ),
+				'popular_items' => __( "Popular Taxonomies", 'dxbase' ),
+				'all_items' => __( "All Taxonomies", 'dxbase' ),
+				'parent_item' => null,
+				'parent_item_colon' => null,
+				'edit_item' => __( "Edit Base Item Taxonomy", 'dxbase' ), 
+				'update_item' => __( "Update Base Item Taxonomy", 'dxbase' ),
+				'add_new_item' => __( "Add New Base Item Taxonomy", 'dxbase' ),
+				'new_item_name' => __( "New Base Item Taxonomy Name", 'dxbase' ),
+				'separate_items_with_commas' => __( "Separate Base Item taxonomies with commas", 'dxbase' ),
+				'add_or_remove_items' => __( "Add or remove Base Item taxonomy", 'dxbase' ),
+				'choose_from_most_used' => __( "Choose from the most used Base Item taxonomies", 'dxbase' )
+			),
+			'show_ui' => true,
+			'query_var' => true,
+			'rewrite' => true,
+		));
+		
+		register_taxonomy_for_object_type( 'pluginbase_taxonomy', 'pluginbase' );
+	}
+``` 
 
 ### Adding Meta Boxes
 
-### Storing custom postmeta values
+Your existing or custom Post types can display additional boxes on the Add/Edit admin screen that allows for displaying data or embedding custom forms for additional data - such as Price, Address or something else. 
+
+You can register those as Custom Fields added to Meta Boxes - sections visible in the Add/Edit Posts screen. There's an `add_meta_boxes` hook to start with:
+
+```php
+	add_action( 'add_meta_boxes', array( $this, 'dx_meta_boxes_callback' ) );
+```
+
+Our callback method will register the metaboxes that we need, attached to a specific post type and listed in the respective position:
+
+```php
+	public function dx_meta_boxes_callback() {
+		// register side box
+		add_meta_box( 
+		        'dx_side_meta_box',
+		        __( "DX Side Box", 'dxbase' ),
+		        array( $this, 'dx_side_meta_box' ),
+		        'pluginbase', // leave empty quotes as '' if you want it on all custom post add/edit screens
+		        'side',
+		        'high'
+		    );
+		    
+		// register bottom box
+		add_meta_box(
+		    	'dx_bottom_meta_box',
+		    	__( "DX Bottom Box", 'dxbase' ), 
+		    	array( $this, 'dx_bottom_meta_box' ),
+		    	'' // leave empty quotes as '' if you want it on all custom post add/edit screens or add a post type slug
+		    );
+	}
+```
+
+The callback of our `add_meta_box` call includes everything that is to be displayed in our new admin section - which could be some informative message or input fields:
+
+```php
+	public function dx_side_meta_box( $post, $metabox) {
+		_e("<p>Side meta content here</p>", 'dxbase');
+		
+		// Add some test data here - a custom field, that is
+		$dx_test_input = '';
+		if ( ! empty ( $post ) ) {
+			// Read the database record if we've saved that before
+			$dx_test_input = get_post_meta( $post->ID, 'dx_test_input', true );
+		}
+		?>
+		<label for="dx-test-input"><?php _e( 'Test Custom Field', 'dxbase' ); ?></label>
+		<input type="text" id="dx-test-input" name="dx_test_input" value="<?php echo $dx_test_input; ?>" />
+		<?php
+	}
+``` 
+
+Our side metabox includes a test input field that is fetched from the database and displayed (if an existing value is available). Other than that, we could save our post and get those data populated in the WordPress database.
+
+### Storing custom field (post meta) values
+
+When saving a post, the `save_post` action is being called:
+
+```php
+	add_action( 'save_post', array( $this, 'dx_save_sample_field' ) );
+```
+
+ We can hook there and verify our custom fields, and store them in the _postmeta database table for the current post entry ID. The default fields are stored by default, but we need to handle our custom entries:
+
+```php
+	public function dx_save_sample_field( $post_id ) {
+		// Avoid autosaves
+		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		$slug = 'pluginbase'; // our post type slug that we're handling
+		// If this isn't a 'book' post, don't update it.
+		if ( ! isset( $_POST['post_type'] ) || $slug != $_POST['post_type'] ) {
+			return;
+		}
+		
+		// If the custom field is found, update the postmeta record
+		// Also, filter the HTML just to be safe
+		if ( isset( $_POST['dx_test_input']  ) ) {
+			update_post_meta( $post_id, 'dx_test_input',  esc_html( $_POST['dx_test_input'] ) );
+		}
+	}
+``` 
 
 ### Making your plugin translatable (i18n)
 
