@@ -125,7 +125,7 @@ class DX_Plugin_Base {
 	 * Loading existing scripts from wp-includes or adding custom ones
 	 *
 	 */
-	public function dx_add_admin_JS() {
+	public function dx_add_admin_JS( $hook ) {
 		wp_enqueue_script( 'jquery' );
 		wp_register_script( 'samplescript-admin', plugins_url( '/js/samplescript-admin.js' , __FILE__ ), array('jquery'), '1.0', true );
 		wp_enqueue_script( 'samplescript-admin' );
