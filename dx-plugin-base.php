@@ -1,6 +1,7 @@
 <?php
 /**
  * Plugin Name: DX Plugin Base
+ * Description: A plugin framework for building new WordPress plugins reusing the accepted APIs and best practices
  * Plugin URI: http://example.org/
  * Author: nofearinc
  * Author URI: http://devwp.eu/
