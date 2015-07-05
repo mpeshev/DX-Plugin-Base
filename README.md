@@ -4,6 +4,11 @@ The DX Plugin Base plugin outlines the best practices through existing code snip
 
 The plugin is ready to go - you can install it and it will simply work! Feel free to fork it away, remove and alter existing snippets and fine tune it in order to make it all yours.
 
+Check out our [intro video](https://www.youtube.com/watch?v=FfQpGD_MUbk) as well:
+
+[![DX Plugin Base Video](http://share.gifyoutube.com/m2ZElx.gif)](https://www.youtube.com/watch?v=FfQpGD_MUbk)
+
+
 You could also use specific snippets and copy them over to your new plugin - just like a snippet library of helper functions for you to use. It's up to you.
 
 When in doubt, always check the syntax and complete function reference at [developer.wordpress.org](https://developer.wordpress.org/).
