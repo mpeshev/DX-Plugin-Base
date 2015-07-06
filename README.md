@@ -289,6 +289,20 @@ When saving a post, the `save_post` action is being called:
 
 ### Making your plugin translatable (i18n)
 
+The WordPress Plugin Handbook has a great resource on [How to Internationalize Your Plugin](https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/), including the list of functions you need to use for your literals, numbers, translating your plugin and including the internationalization capabilities to its core. 
+
+At DX Plugin Base we load the text domain with the `load_plugin_textdomain` function attached to the `plugins_loaded` hook:
+
+```php
+    add_action( 'plugins_loaded', array( $this, 'dx_add_textdomain' ) );
+    
+    	public function dx_add_textdomain() {
+		load_plugin_textdomain( 'dxbase', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+	}
+``` 
+
+We define the dxbase text domain that makes it easier to bundle the entire plugin, generate a .po file and translate it accordingly. You can easily replace all dxbase instances across the plugin with your text domain, and generate the translatable file as per the Plugin Handbook article. 
+
 ### Creating a Settings Page
 
 ### Creating a Custom Widget
