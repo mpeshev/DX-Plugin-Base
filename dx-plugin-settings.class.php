@@ -1,6 +1,5 @@
 <?php
 
-
 class DX_Plugin_Settings {
 	
 	private $dx_setting;
