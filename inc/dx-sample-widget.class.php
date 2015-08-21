@@ -13,7 +13,7 @@ class DX_Sample_Widget extends WP_Widget {
      * Register the widget
      */
     public function __construct() {
-        $this->WP_Widget(
+        parent::__construct(
             'dx_sample_widget',
             __("DX Sample Widget", 'dxbase'),
             array( 'classname' => 'dx_widget_sample_single', 'description' => __( "Display a sample DX Widget", 'dxbase' ) ),
