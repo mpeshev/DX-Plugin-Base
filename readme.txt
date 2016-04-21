@@ -2,7 +2,7 @@
 Contributors: nofearinc, devrix
 Tags: plugin, base, startup, framework, foundation, skeleton, backbone, starter, sample, example
 Requires at least: 3.1
-Tested up to: 4.3
+Tested up to: 4.5
 Stable tag: 1.6
 License: GPLv2 or later
 
