@@ -345,11 +345,13 @@ The shortcode callback can interact with WordPress and all underlying APIs and r
 
 Also You can add another shortcodes in shortcode like:
 
-[dxsampcode]
-[dxsampcode_wp_query]Query Title[/dxsampcode_wp_query]
-[dxsampcode_wp_user_query]User Query Title[/dxsampcode_wp_user_query]
-[dxsampcode_wp_meta_query]Meta Query Title[/dxsampcode_wp_meta_query]
-[/dxsampcode]
+```php
+	[dxsampcode]
+		[dxsampcode_wp_query]Query Title[/dxsampcode_wp_query]
+		[dxsampcode_wp_user_query]User Query Title[/dxsampcode_wp_user_query]
+		[dxsampcode_wp_meta_query]Meta Query Title[/dxsampcode_wp_meta_query]
+	[/dxsampcode]
+```
 
 Arguments are available in the `$attr` array - the first argument of the callback, and a `$content` is also provided if you wrap a chunk of text with your shortcode opening and closing tags.
 
