@@ -105,10 +105,6 @@ class DX_Plugin_Base {
 		add_action( 'init', array( $this, 'dx_custom_post_types_callback' ), 5 );
 		add_action( 'init', array( $this, 'dx_custom_taxonomies_callback' ), 6 );
 		
-		// Register activation and deactivation hooks
-		register_activation_hook( __FILE__, 'dx_on_activate_callback' );
-		register_deactivation_hook( __FILE__, 'dx_on_deactivate_callback' );
-		
 		// Translation-ready
 		add_action( 'plugins_loaded', array( $this, 'dx_add_textdomain' ) );
 		
@@ -496,6 +492,7 @@ class DX_Plugin_Base {
 function dx_on_activate_callback() {
 	// do something on activation
 }
+register_activation_hook( __FILE__, 'dx_on_activate_callback' );
 
 /**
  * Register deactivation hook
@@ -504,6 +501,16 @@ function dx_on_activate_callback() {
 function dx_on_deactivate_callback() {
 	// do something when deactivated
 }
+register_deactivation_hook( __FILE__, 'dx_on_deactivate_callback' );
+
+/**
+ * Register uninstall hook
+ * 
+ */
+function dx_on_uninstall_callback(){
+	// do something when plugin is uninstalling
+}
+register_uninstall_hook( __FILE__, 'dx_on_uninstall_callback' );
 
 // Initialize everything
 $dx_plugin_base = new DX_Plugin_Base();
