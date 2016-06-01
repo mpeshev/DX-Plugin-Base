@@ -450,6 +450,9 @@ class DX_Plugin_Base {
 	 */
 	public function dx_sample_shortcode() {
 		add_shortcode( 'dxsampcode', array( $this, 'dx_sample_shortcode_body' ) );
+		add_shortcode( 'dxsampcode_wp_query', array( $this, 'dx_sample_shortcode_wp_query_body' ) );
+		add_shortcode( 'dxsampcode_wp_user_query', array( $this, 'dx_sample_shortcode_wp_user_query_body' ) );
+		add_shortcode( 'dxsampcode_wp_meta_query', array( $this, 'dx_sample_shortcode_wp_meta_query_body' ) );
 	}
 	
 	/**
@@ -461,8 +464,140 @@ class DX_Plugin_Base {
 		/*
 		 * Manage the attributes and the content as per your request and return the result
 		 */
-		return __( 'Sample Output', DXP_TD);
+		ob_start();
+		?>
+		<div class="dx-sample-shortcode-main-wrap">
+			<?php echo do_shortcode( $content );?>
+		</div>
+		<?php 
+		
+		return ob_get_clean();
 	}
+	
+	/**
+	 * Returns the latest posts, using WP_Query
+	 * @param array $attr arguments passed to array, like [dxsampcode_wp_query posts_per_page="10" orderby="title"]
+	 * @param string $content optional, could be used for a content to be a title, such as [dxsampcode_wp_query]somecontnet[/dxsampcode_wp_query]
+	 */
+	public function dx_sample_shortcode_wp_query_body( $attr, $content = null ) {
+		/*
+		 * Manage the attributes and the content as per your request and return the result
+		 */
+		$current_post = get_the_ID();
+		$default = array(
+			'post_type'			=> 'post',
+			'orderby'			=> 'date',
+			'order'				=> 'DESC',
+			'posts_per_page'	=> 3,
+			'post__not_in'		=> array( $current_post ),
+		);
+		$attr = wp_parse_args( $attr, $default );
+		$wp_query = new WP_Query( $attr );			
+		
+		ob_start();
+		?>
+		<?php if( $wp_query->have_posts() ): ?>
+		<div class="dx-sample-shortcode-wp-query">
+			<?php if( !empty( $content ) ):?>
+			<h2><?php echo $content;?></h2>			
+			<?php endif;?>
+			<?php while ( $wp_query->have_posts() ): ?>
+			<?php $wp_query->the_post(); ?>
+			<div class="dx-sample-post">
+				<h3 class="dx-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+				<?php the_content(); ?>
+			</div>
+			<?php endwhile; ?>
+		</div>
+		<?php wp_reset_query(); ?>
+		<?php endif; ?>
+		<?php 		
+		return ob_get_clean();
+	}
+	
+	/**
+	 * Returns the list of the top Users
+	 * @param array $attr arguments passed to array, like [dxsampcode_wp_user_query number="3" orderby="post_count"]
+	 * @param string $content optional, could be used for a content to be wrapped, such as [dxsampcode_wp_user_query]somecontnet[/dxsampcode_wp_user_query]
+	 */
+	public function dx_sample_shortcode_wp_user_query_body( $attr, $content = null ) {
+		/*
+		 * Manage the attributes and the content as per your request and return the result
+		 */
+		$default = array(
+			'orderby'			=> 'post_count',
+			'order'				=> 'DESC',
+			'number'			=> 3,//nubmer of users
+		);
+		$attr = wp_parse_args( $attr, $default );
+		$top_users = new WP_User_Query( $attr );			
+		
+		ob_start();
+		?>
+		<?php if( !empty( $top_users->results ) ): ?>
+		<div class="dx-sample-shortcode-wp-user-query">
+			<?php if( !empty( $content ) ):?>
+			<h2><?php echo $content;?></h2>			
+			<?php endif;?>
+			<ul class="dx-sample--top-users">
+			<?php foreach($top_users->results as $user ): ?>
+				<?php $userdata = get_userdata( $user->ID ); ?>
+				<li><?php echo $user->data->display_name; ?></li>
+			<?php endforeach; ?>
+			</ul>
+		</div>
+		<?php endif; ?>
+		<?php 		
+		return ob_get_clean();
+	}
+	
+	/**
+	 * Returns the posts, that has not empty dx_test_input metabox
+	 * @param array $attr arguments passed to array, like [dxsampcode_wp_meta_query key="one" value="two"]
+	 * @param string $content If not empty will display as title of sectionm, like [dxsampcode_wp_meta_query]somecontnet[/dxsampcode_wp_meta_query]
+	 */
+	public function dx_sample_shortcode_wp_meta_query_body( $attr, $content = null ) {
+		/*
+		 * Manage the attributes and the content as per your request and return the result
+		 */
+		
+		$current_post = get_the_ID();
+		$default = array(
+			'post_type'			=> 'pluginbase',
+			'orderby'			=> 'date',
+			'order'				=> 'DESC',
+			'posts_per_page'	=> 10,
+			'post__not_in'		=> array( $current_post ),
+			'meta_query' => array(
+				array(
+					'key'     => 'dx_test_input',
+					'value'   => array(''),
+					'compare' => 'NOT IN',
+				),
+			),
+		);
+		$attr = wp_parse_args( $attr, $default );
+		$wp_meta_query = new WP_Query( $attr );	
+		
+		ob_start();
+		?>
+		<?php if( $wp_meta_query->have_posts() ): ?>
+		<div class="dx-sample-shortcode-wp-meta-query">
+			<?php if( !empty( $content ) ):?>
+			<h2><?php echo $content;?></h2>			
+			<?php endif;?>
+			<?php while( $wp_meta_query->have_posts() ): ?>
+			<?php $wp_meta_query->the_post(); ?>
+			<div class="dx-sample-post">
+				<h3 class="dx-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+				<?php the_content(); ?>
+			</div>
+			<?php endwhile; ?>
+		</div>
+		<?php endif; ?>
+		<?php 		
+		return ob_get_clean();
+	}	
 	
 	/**
 	 * Hook for including a sample widget with options
