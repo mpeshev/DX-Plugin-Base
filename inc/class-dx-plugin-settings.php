@@ -107,7 +107,9 @@ class DX_Plugin_Settings {
 	 * @param array $input
 	 */
 	public function dx_validate_settings( $input ) {
-		
+		array_walk_recursive($input, function( &$item, $key ){//senitizy the user input before saving to the DB
+			$item = esc_attr( $item );
+		});
 		return $input;
 	}
 }
