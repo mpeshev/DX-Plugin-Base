@@ -127,6 +127,12 @@ class DX_Plugin_Base {
  		add_action( 'wp_ajax_store_ajax_value', array( $this, 'store_ajax_value' ) );
  		add_action( 'wp_ajax_fetch_ajax_url_http', array( $this, 'fetch_ajax_url_http' ) );
 		
+		//hook to the base page setting page form , and add content in form before and after the elements
+		add_action( 'dx_base_page_template_form_before_settings', array( $this, 'base_page_template_form_before' ) );
+		add_action( 'dx_base_page_template_form_after_settings', array( $this, 'base_page_template_form_after' ) );
+		
+		//change the to the base page setting page form submit button text (value)
+		add_filter( 'dx_base_page_template_form_submit_button', array( $this, 'base_page_template_form_submit_button' ) );
 	}
 
 	/**
@@ -154,6 +160,25 @@ class DX_Plugin_Base {
 		endif;
 	}
 		
+	/**
+	 * Adding the content in form before it elemnts
+	 */
+	public function base_page_template_form_before() {
+		_e( 'Sample example, of adding a custom hook. This will add conternt before form elements.', DXP_TD );
+	}
+	
+	/**
+	 * Adding the content in form after it elemnts
+	 */
+	public function base_page_template_form_after() {
+		_e( 'Sample example, of adding a custom hook. This will add conternt after form elements.', DXP_TD );
+		echo '<br>';
+	}
+	
+	public function base_page_template_form_submit_button( $value ) {
+		return __( 'Save settings', DXP_TD );
+	}
+	
 	/**
 	 * 
 	 * Adding JavaScript scripts
