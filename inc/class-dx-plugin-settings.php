@@ -67,6 +67,8 @@ class DX_Plugin_Settings {
 			$out = '<input type="checkbox" id="dx_opt_in" name="dx_setting[dx_opt_in]" />';
 		}
 		
+		$out .= sprintf( '<p>%s</p>', __( 'Cehckbox description text sample.', DXP_TD ) );
+		
 		echo $out;
 	}
 	
@@ -80,6 +82,7 @@ class DX_Plugin_Settings {
 		}
 
 		$out = '<input type="text" id="dx_sample_text" name="dx_setting[dx_sample_text]" value="' . $val . '"  />';
+		$out .= sprintf( '<p>%s</p>', __( 'Input description text sample.', DXP_TD ) );
 		
 		echo $out;
 	}
