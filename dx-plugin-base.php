@@ -175,6 +175,12 @@ class DX_Plugin_Base {
 		echo '<br>';
 	}
 	
+	/**
+	 * Callback for the filter the submit button text in base page template
+	 * 
+	 * @param string $value
+	 * @return string The new value of the submit button
+	 */
 	public function base_page_template_form_submit_button( $value ) {
 		return __( 'Save settings', DXP_TD );
 	}

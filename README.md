@@ -358,6 +358,48 @@ Arguments are available in the `$attr` array - the first argument of the callbac
 		return __( 'Sample Output', DXP_TD);
 	}
 ```
+### Creating a Custom Hooks
+
+There are can be created the custom hooks in plugin code for the access from others plugins, of from it self
+It can be done, using the do_action and apply_filters function in needed place by adding:
+
+```php
+    <?php do_action( 'dx_base_page_template_form_before_settings' ) ?>
+```
+ And 
+
+```php
+	<input type="submit" value="<?php echo apply_filters( 'dx_base_page_template_form_submit_button', __( "Save", DXP_TD ) ) ?>" />	
+```
+
+Thats hooks can be called from the plugin or theme functions.php.
+
+For example 
+
+```php
+    add_action( 'dx_base_page_template_form_before_settings', array( $this, 'base_page_template_form_before' ) );
+```
+
+And the callback for the hook
+
+```php
+	public function base_page_template_form_before() {
+		_e( 'Sample example, of adding a custom hook. This will add conternt before form elements.', DXP_TD );
+	}
+```
+
+Also there are can be changed the submit button value (text)
+
+```php
+	add_filter( 'dx_base_page_template_form_submit_button', array( $this, 'base_page_template_form_submit_button' ) );
+```
+The callback
+
+```php
+	public function base_page_template_form_submit_button( $value ) {
+		return __( 'Save settings', DXP_TD );
+	}
+```
 
 ### Fetching AJAX Data Remotely
 
