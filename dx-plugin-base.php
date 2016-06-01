@@ -164,14 +164,14 @@ class DX_Plugin_Base {
 	 * Adding the content in form before it elemnts
 	 */
 	public function base_page_template_form_before() {
-		_e( 'Sample example, of adding a custom hook. This will add conternt before form elements.', DXP_TD );
+		_e( 'Sample example, of adding a custom hook. This will add content before form elements.', DXP_TD );
 	}
 	
 	/**
 	 * Adding the content in form after it elemnts
 	 */
 	public function base_page_template_form_after() {
-		_e( 'Sample example, of adding a custom hook. This will add conternt after form elements.', DXP_TD );
+		_e( 'Sample example, of adding a custom hook. This will add content after form elements.', DXP_TD );
 		echo '<br>';
 	}
 	
