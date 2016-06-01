@@ -2,8 +2,8 @@
 Contributors: nofearinc, devrix
 Tags: plugin, base, startup, framework, foundation, skeleton, backbone, starter, sample, example
 Requires at least: 3.1
-Tested up to: 4.3
-Stable tag: 1.6
+Tested up to: 4.5.2
+Stable tag: 1.7
 License: GPLv2 or later
 
 Startup plugin code for new plugin, including the archetype of standard features, admin and core functions to be used in new plugins.
@@ -49,6 +49,17 @@ Yes, it is, as well as with the latest PHP.
 I've removed the 'pass-by-reference' call for all array( $this, ... ) entries as it's deprecated since 5.3.0. If you happen to use 5.2.4, you can replace all $this in arrays with &$this or better update PHP version.
 
 == Changelog ==
+
+= 1.7 =
+* Add properties with the plugin dir/url to not call every time according functions
+* Add WP_Query, WP_User_Query and meta query for example
+* Add hierarchical shortcodes example
+* Move template files to template folder
+* Move css/js files to assets folder
+* Sanitizing the user input before save to the DB
+* Add example of the custom hooks in to the base page template (action), and the filter for the save button value
+* Add uninstall hook
+* Add the description example for the inputs in the base page template (settings page) 
 
 = 1.6 =
 * Widget update for PHP compatibility with 4.3
