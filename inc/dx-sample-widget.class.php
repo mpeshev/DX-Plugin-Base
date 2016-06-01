@@ -15,8 +15,8 @@ class DX_Sample_Widget extends WP_Widget {
     public function __construct() {
         parent::__construct(
             'dx_sample_widget',
-            __("DX Sample Widget", 'dxbase'),
-            array( 'classname' => 'dx_widget_sample_single', 'description' => __( "Display a sample DX Widget", 'dxbase' ) ),
+            __("DX Sample Widget", DXP_TD),
+            array( 'classname' => 'dx_widget_sample_single', 'description' => __( "Display a sample DX Widget", DXP_TD ) ),
             array( ) // you can pass width/height as parameters with values here
         );
     }
@@ -86,18 +86,18 @@ class DX_Sample_Widget extends WP_Widget {
         $sample_dropdown = esc_attr( $instance[ 'sample_dropdown' ] );
         
         ?>
-		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e( "Title:", 'dxbase'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></p>
-		<p><label for="<?php echo $this->get_field_id('sample_text'); ?>"><?php _e( "Sample Text:", 'dxbase'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('sample_text'); ?>" name="<?php echo $this->get_field_name('sample_text'); ?>" type="text" value="<?php echo $sample_text; ?>" /></p>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e( "Title:", DXP_TD); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></p>
+		<p><label for="<?php echo $this->get_field_id('sample_text'); ?>"><?php _e( "Sample Text:", DXP_TD); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('sample_text'); ?>" name="<?php echo $this->get_field_name('sample_text'); ?>" type="text" value="<?php echo $sample_text; ?>" /></p>
 		<p>
-			<label for="<?php echo $this->get_field_id('sample_dropdown'); ?>"><?php _e( "Areas:", 'dxbase' ); ?></label>
+			<label for="<?php echo $this->get_field_id('sample_dropdown'); ?>"><?php _e( "Areas:", DXP_TD ); ?></label>
 			<select name="<?php echo $this->get_field_name('sample_dropdown'); ?>" id="<?php echo $this->get_field_id('sample_dropdown'); ?>" class="widefat">
-				<option value="asia"<?php selected( $instance['sample_dropdown'], 'asia' ); ?>><?php _e( "Asia", 'dxbase' ); ?></option>
-				<option value="africa"<?php selected( $instance['sample_dropdown'], 'africa' ); ?>><?php _e( "Africa", 'dxbase' ); ?></option>
-				<option value="north_america"<?php selected( $instance['sample_dropdown'], 'north_america' ); ?>><?php _e( "North America", 'dxbase' ); ?></option>
-				<option value="south_america"<?php selected( $instance['sample_dropdown'], 'south_america' ); ?>><?php _e( "South America", 'dxbase' ); ?></option>
-				<option value="antarctica"<?php selected( $instance['sample_dropdown'], 'antarctica' ); ?>><?php _e( "Antarctica", 'dxbase' ); ?></option>
-				<option value="europe"<?php selected( $instance['sample_dropdown'], 'europe' ); ?>><?php _e( "Europe", 'dxbase' ); ?></option>
-				<option value="australia"<?php selected( $instance['sample_dropdown'], 'australia' ); ?>><?php _e( "Australia", 'dxbase' ); ?></option>
+				<option value="asia"<?php selected( $instance['sample_dropdown'], 'asia' ); ?>><?php _e( "Asia", DXP_TD ); ?></option>
+				<option value="africa"<?php selected( $instance['sample_dropdown'], 'africa' ); ?>><?php _e( "Africa", DXP_TD ); ?></option>
+				<option value="north_america"<?php selected( $instance['sample_dropdown'], 'north_america' ); ?>><?php _e( "North America", DXP_TD ); ?></option>
+				<option value="south_america"<?php selected( $instance['sample_dropdown'], 'south_america' ); ?>><?php _e( "South America", DXP_TD ); ?></option>
+				<option value="antarctica"<?php selected( $instance['sample_dropdown'], 'antarctica' ); ?>><?php _e( "Antarctica", DXP_TD ); ?></option>
+				<option value="europe"<?php selected( $instance['sample_dropdown'], 'europe' ); ?>><?php _e( "Europe", DXP_TD ); ?></option>
+				<option value="australia"<?php selected( $instance['sample_dropdown'], 'australia' ); ?>><?php _e( "Australia", DXP_TD ); ?></option>
 			</select>
 		</p>
 	<?php

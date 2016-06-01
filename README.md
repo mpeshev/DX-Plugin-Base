@@ -31,7 +31,7 @@ This would add the `dx_add_JS` function do the hook responsible for adding scrip
 	public function dx_add_JS() {
 		wp_enqueue_script( 'jquery' );
 		// load custom JSes and put them in footer
-		wp_register_script( 'samplescript', plugins_url( '/js/samplescript.js' , __FILE__ ), array('jquery'), '1.0', true );
+		wp_register_script( 'samplescript', $this->url_assets . 'js/samplescript.js', array('jquery'), '1.0', true );
 		wp_enqueue_script( 'samplescript' );
 	}
 ```
@@ -47,7 +47,7 @@ Calling a function for your backend is similar:
 ```php
 	public function dx_add_admin_JS( $hook ) {
 		wp_enqueue_script( 'jquery' );
-		wp_register_script( 'samplescript-admin', plugins_url( '/js/samplescript-admin.js' , __FILE__ ), array('jquery'), '1.0', true );
+		wp_register_script( 'samplescript-admin', $this->url_assets . 'js/samplescript-admin.js', array('jquery'), '1.0', true );
 		wp_enqueue_script( 'samplescript-admin' );
 	}
 ```
@@ -72,10 +72,10 @@ Then, you can call the `wp_enqueue_style` function within your callback method i
 
 ```php
    	public function dx_add_admin_CSS( $hook ) {
-		wp_register_style( 'samplestyle-admin', plugins_url( '/css/samplestyle-admin.css', __FILE__ ), array(), '1.0', 'screen' );
+		wp_register_style( 'samplestyle-admin', $this->url_assets . '/css/samplestyle-admin.css', array(), '1.0', 'screen' );
 		wp_enqueue_style( 'samplestyle-admin' );	
 		if( 'toplevel_page_dx-plugin-base' === $hook ) {
-			wp_register_style('dx_help_page',  plugins_url( '/help-page.css', __FILE__ ) );
+			wp_register_style('dx_help_page',  $this->url_assets . '/help-page.css' );
 			wp_enqueue_style('dx_help_page');
 		}
 	}
@@ -95,20 +95,22 @@ Then you can add top level or submenu pages to your dashboard menu:
 
 ```php
 	public function dx_admin_pages_callback() {
-		add_menu_page(__( "Plugin Base Admin", 'dxbase' ), __( "Plugin Base Admin", 'dxbase' ), 'edit_themes', 'dx-plugin-base', array( $this, 'dx_plugin_base' ) );		
-		add_submenu_page( 'dx-plugin-base', __( "Base Subpage", 'dxbase' ), __( "Base Subpage", 'dxbase' ), 'edit_themes', 'dx-base-subpage', array( $this, 'dx_plugin_subpage' ) );
-		add_submenu_page( 'dx-plugin-base', __( "Remote Subpage", 'dxbase' ), __( "Remote Subpage", 'dxbase' ), 'edit_themes', 'dx-remote-subpage', array( $this, 'dx_plugin_side_access_page' ) );
+		add_menu_page(__( "Plugin Base Admin", DXP_TD ), __( "Plugin Base Admin", DXP_TD ), 'edit_themes', 'dx-plugin-base', array( $this, 'dx_plugin_base' ) );		
+		add_submenu_page( 'dx-plugin-base', __( "Base Subpage", DXP_TD ), __( "Base Subpage", DXP_TD ), 'edit_themes', 'dx-base-subpage', array( $this, 'dx_plugin_subpage' ) );
+		add_submenu_page( 'dx-plugin-base', __( "Remote Subpage", DXP_TD ), __( "Remote Subpage", DXP_TD ), 'edit_themes', 'dx-remote-subpage', array( $this, 'dx_plugin_side_access_page' ) );
 	}
 ```
 
 It's up to you what would you hook exactly and what would be the capabilities required for your users, but that's the sample syntax that you'd need. Each of those pages is defined via a callback at the end of the function parameters list, that could either be plain HTML/PHP, or loading an external file including your logic:
 
 ```php
-	// Earlier in your plugin header
-	define( 'DXP_PATH_INCLUDES', dirname( __FILE__ ) . '/inc' );
+	// Earlier in your plugin setup
+	if( empty( $this->path_template ) ):
+		$this->path_template		= trailingslashit( $this->path . 'template' );				
+	endif;
 	// A class method for the callback
 	public function dx_plugin_side_access_page() {
-		include_once( DXP_PATH_INCLUDES . '/remote-page-template.php' );
+		include_once( $this->path_template . 'remote-page-template.php' );
 	}
 ```
 
@@ -126,18 +128,18 @@ The function responsible for the registration has plenty of options to play with
 	public function dx_custom_post_types_callback() {
 		register_post_type( 'pluginbase', array(
 			'labels' => array(
-				'name' => __("Base Items", 'dxbase'),
-				'singular_name' => __("Base Item", 'dxbase'),
-				'add_new' => _x("Add New", 'pluginbase', 'dxbase' ),
-				'add_new_item' => __("Add New Base Item", 'dxbase' ),
-				'edit_item' => __("Edit Base Item", 'dxbase' ),
-				'new_item' => __("New Base Item", 'dxbase' ),
-				'view_item' => __("View Base Item", 'dxbase' ),
-				'search_items' => __("Search Base Items", 'dxbase' ),
-				'not_found' =>  __("No base items found", 'dxbase' ),
-				'not_found_in_trash' => __("No base items found in Trash", 'dxbase' ),
+				'name' => __("Base Items", DXP_TD),
+				'singular_name' => __("Base Item", DXP_TD),
+				'add_new' => _x("Add New", 'pluginbase', DXP_TD ),
+				'add_new_item' => __("Add New Base Item", DXP_TD ),
+				'edit_item' => __("Edit Base Item", DXP_TD ),
+				'new_item' => __("New Base Item", DXP_TD ),
+				'view_item' => __("View Base Item", DXP_TD ),
+				'search_items' => __("Search Base Items", DXP_TD ),
+				'not_found' =>  __("No base items found", DXP_TD ),
+				'not_found_in_trash' => __("No base items found in Trash", DXP_TD ),
 			),
-			'description' => __("Base Items for the demo", 'dxbase'),
+			'description' => __("Base Items for the demo", DXP_TD),
 			'public' => true,
 			'publicly_queryable' => true,
 			'query_var' => true,
@@ -177,20 +179,20 @@ Then, our callback is registering the custom taxonomy and binds it so a custom p
 		register_taxonomy( 'pluginbase_taxonomy', 'pluginbase', array(
 			'hierarchical' => true,
 			'labels' => array(
-				'name' => _x( "Base Item Taxonomies", 'taxonomy general name', 'dxbase' ),
-				'singular_name' => _x( "Base Item Taxonomy", 'taxonomy singular name', 'dxbase' ),
-				'search_items' =>  __( "Search Taxonomies", 'dxbase' ),
-				'popular_items' => __( "Popular Taxonomies", 'dxbase' ),
-				'all_items' => __( "All Taxonomies", 'dxbase' ),
+				'name' => _x( "Base Item Taxonomies", 'taxonomy general name', DXP_TD ),
+				'singular_name' => _x( "Base Item Taxonomy", 'taxonomy singular name', DXP_TD ),
+				'search_items' =>  __( "Search Taxonomies", DXP_TD ),
+				'popular_items' => __( "Popular Taxonomies", DXP_TD ),
+				'all_items' => __( "All Taxonomies", DXP_TD ),
 				'parent_item' => null,
 				'parent_item_colon' => null,
-				'edit_item' => __( "Edit Base Item Taxonomy", 'dxbase' ), 
-				'update_item' => __( "Update Base Item Taxonomy", 'dxbase' ),
-				'add_new_item' => __( "Add New Base Item Taxonomy", 'dxbase' ),
-				'new_item_name' => __( "New Base Item Taxonomy Name", 'dxbase' ),
-				'separate_items_with_commas' => __( "Separate Base Item taxonomies with commas", 'dxbase' ),
-				'add_or_remove_items' => __( "Add or remove Base Item taxonomy", 'dxbase' ),
-				'choose_from_most_used' => __( "Choose from the most used Base Item taxonomies", 'dxbase' )
+				'edit_item' => __( "Edit Base Item Taxonomy", DXP_TD ), 
+				'update_item' => __( "Update Base Item Taxonomy", DXP_TD ),
+				'add_new_item' => __( "Add New Base Item Taxonomy", DXP_TD ),
+				'new_item_name' => __( "New Base Item Taxonomy Name", DXP_TD ),
+				'separate_items_with_commas' => __( "Separate Base Item taxonomies with commas", DXP_TD ),
+				'add_or_remove_items' => __( "Add or remove Base Item taxonomy", DXP_TD ),
+				'choose_from_most_used' => __( "Choose from the most used Base Item taxonomies", DXP_TD )
 			),
 			'show_ui' => true,
 			'query_var' => true,
@@ -218,7 +220,7 @@ Our callback method will register the metaboxes that we need, attached to a spec
 		// register side box
 		add_meta_box( 
 		        'dx_side_meta_box',
-		        __( "DX Side Box", 'dxbase' ),
+		        __( "DX Side Box", DXP_TD ),
 		        array( $this, 'dx_side_meta_box' ),
 		        'pluginbase', // leave empty quotes as '' if you want it on all custom post add/edit screens
 		        'side',
@@ -228,7 +230,7 @@ Our callback method will register the metaboxes that we need, attached to a spec
 		// register bottom box
 		add_meta_box(
 		    	'dx_bottom_meta_box',
-		    	__( "DX Bottom Box", 'dxbase' ), 
+		    	__( "DX Bottom Box", DXP_TD ), 
 		    	array( $this, 'dx_bottom_meta_box' ),
 		    	'' // leave empty quotes as '' if you want it on all custom post add/edit screens or add a post type slug
 		    );
@@ -239,7 +241,7 @@ The callback of our `add_meta_box` call includes everything that is to be displa
 
 ```php
 	public function dx_side_meta_box( $post, $metabox) {
-		_e("<p>Side meta content here</p>", 'dxbase');
+		_e("<p>Side meta content here</p>", DXP_TD);
 		
 		// Add some test data here - a custom field, that is
 		$dx_test_input = '';
@@ -248,7 +250,7 @@ The callback of our `add_meta_box` call includes everything that is to be displa
 			$dx_test_input = get_post_meta( $post->ID, 'dx_test_input', true );
 		}
 		?>
-		<label for="dx-test-input"><?php _e( 'Test Custom Field', 'dxbase' ); ?></label>
+		<label for="dx-test-input"><?php _e( 'Test Custom Field', DXP_TD ); ?></label>
 		<input type="text" id="dx-test-input" name="dx_test_input" value="<?php echo $dx_test_input; ?>" />
 		<?php
 	}
@@ -297,7 +299,7 @@ At DX Plugin Base we load the text domain with the `load_plugin_textdomain` func
     add_action( 'plugins_loaded', array( $this, 'dx_add_textdomain' ) );
     
     	public function dx_add_textdomain() {
-		load_plugin_textdomain( 'dxbase', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+		load_plugin_textdomain( DXP_TD, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 	}
 ``` 
 
@@ -321,7 +323,7 @@ A custom widget is available in `inc/dx-sample-widget.class.php` and registered 
    add_action( 'widgets_init', array( $this, 'dx_sample_widget' ) );
    ...
     public function dx_sample_widget() {
-	    include_once DXP_PATH_INCLUDES . '/dx-sample-widget.class.php';
+	    include_once $this->path_include . 'dx-sample-widget.class.php';
     }
 ```
 
@@ -353,7 +355,7 @@ Arguments are available in the `$attr` array - the first argument of the callbac
 		/*
 		 * Manage the attributes and the content as per your request and return the result
 		 */
-		return __( 'Sample Output', 'dxbase');
+		return __( 'Sample Output', DXP_TD);
 	}
 ```
 
