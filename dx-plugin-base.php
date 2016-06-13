@@ -5,7 +5,7 @@
  * Plugin URI: http://example.org/
  * Author: nofearinc
  * Author URI: http://devwp.eu/
- * Version: 1.6
+ * Version: 1.7
  * Text Domain: dx-sample-plugin
  * License: GPL2
 
@@ -29,13 +29,12 @@
  * Get some constants ready for paths when your plugin grows 
  * 
  */
-
-define( 'DXP_VERSION', '1.6' );
-define( 'DXP_PATH', dirname( __FILE__ ) );
-define( 'DXP_PATH_INCLUDES', dirname( __FILE__ ) . '/inc' );
-define( 'DXP_FOLDER', basename( DXP_PATH ) );
-define( 'DXP_URL', plugins_url() . '/' . DXP_FOLDER );
-define( 'DXP_URL_INCLUDES', DXP_URL . '/inc' );
+if( !defined( 'DXP_TD' ) ){
+	/**
+	 * The plugin text_domain
+	 */
+	define( 'DXP_TD', 'dxbase' );
+}
 
 
 /**
@@ -43,15 +42,47 @@ define( 'DXP_URL_INCLUDES', DXP_URL . '/inc' );
  * The plugin base class - the root of all WP goods!
  * 
  * @author nofearinc
- *
+ * @todo Replace it with Your plugin class name
  */
 class DX_Plugin_Base {
 	
+	/**
+	 * Can be get only from ancestry of this class
+	 * @var string The plugin version
+	 */
+	protected $version;
+
+	/**
+	 * Can be get only from ancestry of this class
+	 * @var string The path to the plugin folder
+	 */
+	protected $path;
+	
+	/**
+	 * Can be get only from ancestry of this class
+	 * @var string The path to the include folder
+	 */
+	protected $path_include;
+	
+	/**
+	 * Can be get only from ancestry of this class
+	 * @var string Url to the plugin folder 
+	 */
+	protected $url;
+	
+	/**
+	 * Can be get only from ancestry of this class
+	 * @var string Url to the assets folder, where are js & css files are.
+	 */
+	protected $url_assets;
+
 	/**
 	 * 
 	 * Assign everything as a call from within the constructor
 	 */
 	public function __construct() {
+		$this->setup();
+		
 		// add script and style calls the WP way 
 		// it's a bit confusing as styles are called with a scripts hook
 		// @blamenacin - http://make.wordpress.org/core/2011/12/12/use-wp_enqueue_scripts-not-wp_print_styles-to-enqueue-scripts-and-styles-for-the-frontend/
@@ -61,7 +92,6 @@ class DX_Plugin_Base {
 		// add scripts and styles only available in admin
 		add_action( 'admin_enqueue_scripts', array( $this, 'dx_add_admin_JS' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'dx_add_admin_CSS' ) );
-		
 		// register admin pages for the plugin
 		add_action( 'admin_menu', array( $this, 'dx_admin_pages_callback' ) );
 		
@@ -74,10 +104,6 @@ class DX_Plugin_Base {
 		// Register custom post types and taxonomies
 		add_action( 'init', array( $this, 'dx_custom_post_types_callback' ), 5 );
 		add_action( 'init', array( $this, 'dx_custom_taxonomies_callback' ), 6 );
-		
-		// Register activation and deactivation hooks
-		register_activation_hook( __FILE__, 'dx_on_activate_callback' );
-		register_deactivation_hook( __FILE__, 'dx_on_deactivate_callback' );
 		
 		// Translation-ready
 		add_action( 'plugins_loaded', array( $this, 'dx_add_textdomain' ) );
@@ -101,7 +127,63 @@ class DX_Plugin_Base {
  		add_action( 'wp_ajax_store_ajax_value', array( $this, 'store_ajax_value' ) );
  		add_action( 'wp_ajax_fetch_ajax_url_http', array( $this, 'fetch_ajax_url_http' ) );
 		
-	}	
+		//hook to the base page setting page form , and add content in form before and after the elements
+		add_action( 'dx_base_page_template_form_before_settings', array( $this, 'base_page_template_form_before' ) );
+		add_action( 'dx_base_page_template_form_after_settings', array( $this, 'base_page_template_form_after' ) );
+		
+		//change the to the base page setting page form submit button text (value)
+		add_filter( 'dx_base_page_template_form_submit_button', array( $this, 'base_page_template_form_submit_button' ) );
+	}
+
+	/**
+	 * Setup the plugin main properties
+	 */
+	protected function setup() {
+		//check all properties, if they are empty assign data accordingly
+		if ( empty( $this->version ) ): 
+			$this->version			= '1.7';				
+		endif;
+		if( empty( $this->path ) ): 
+			$this->path				= trailingslashit( dirname( __FILE__ ) );				
+		endif;
+		if( empty( $this->path_include ) ):  
+			$this->path_include		= trailingslashit( $this->path . 'inc' );				
+		endif;
+		if( empty( $this->path_template ) ):
+			$this->path_template		= trailingslashit( $this->path . 'template' );				
+		endif;
+		if( empty( $this->url ) ): 
+			$this->url				= trailingslashit( plugins_url( '', __FILE__ ) );				
+		endif;
+		if( empty( $this->url_assets ) ):
+			$this->url_assets		= trailingslashit( $this->url . 'assets' );				
+		endif;
+	}
+		
+	/**
+	 * Adding the content in form before it elemnts
+	 */
+	public function base_page_template_form_before() {
+		_e( 'Sample example, of adding a custom hook. This will add content before form elements.', DXP_TD );
+	}
+	
+	/**
+	 * Adding the content in form after it elemnts
+	 */
+	public function base_page_template_form_after() {
+		_e( 'Sample example, of adding a custom hook. This will add content after form elements.', DXP_TD );
+		echo '<br>';
+	}
+	
+	/**
+	 * Callback for the filter the submit button text in base page template
+	 * 
+	 * @param string $value
+	 * @return string The new value of the submit button
+	 */
+	public function base_page_template_form_submit_button( $value ) {
+		return __( 'Save settings', DXP_TD );
+	}
 	
 	/**
 	 * 
@@ -113,7 +195,7 @@ class DX_Plugin_Base {
 	public function dx_add_JS() {
 		wp_enqueue_script( 'jquery' );
 		// load custom JSes and put them in footer
-		wp_register_script( 'samplescript', plugins_url( '/js/samplescript.js' , __FILE__ ), array('jquery'), '1.0', true );
+		wp_register_script( 'samplescript', $this->url_assets . 'js/samplescript.js', array('jquery'), '1.0', true );
 		wp_enqueue_script( 'samplescript' );
 	}
 	
@@ -127,7 +209,7 @@ class DX_Plugin_Base {
 	 */
 	public function dx_add_admin_JS( $hook ) {
 		wp_enqueue_script( 'jquery' );
-		wp_register_script( 'samplescript-admin', plugins_url( '/js/samplescript-admin.js' , __FILE__ ), array('jquery'), '1.0', true );
+		wp_register_script( 'samplescript-admin', $this->url_assets .  'js/samplescript-admin.js' , array('jquery'), '1.0', true );
 		wp_enqueue_script( 'samplescript-admin' );
 	}
 	
@@ -137,7 +219,7 @@ class DX_Plugin_Base {
 	 * 
 	 */
 	public function dx_add_CSS() {
-		wp_register_style( 'samplestyle', plugins_url( '/css/samplestyle.css', __FILE__ ), array(), '1.0', 'screen' );
+		wp_register_style( 'samplestyle', $this->url_assets . 'css/samplestyle.css', array(), '1.0', 'screen' );
 		wp_enqueue_style( 'samplestyle' );
 	}
 	
@@ -147,15 +229,15 @@ class DX_Plugin_Base {
 	 *
 	 */
 	public function dx_add_admin_CSS( $hook ) {
-		wp_register_style( 'samplestyle-admin', plugins_url( '/css/samplestyle-admin.css', __FILE__ ), array(), '1.0', 'screen' );
+		wp_register_style( 'samplestyle-admin', $this->url_assets .  'css/samplestyle-admin.css', array(), '1.0', 'screen' );
 		wp_enqueue_style( 'samplestyle-admin' );
 		
 		if( 'toplevel_page_dx-plugin-base' === $hook ) {
-			wp_register_style('dx_help_page',  plugins_url( '/help-page.css', __FILE__ ) );
+			wp_register_style('dx_help_page',  $this->url_assets . 'css/help-page.css' );
 			wp_enqueue_style('dx_help_page');
 		}
 	}
-	
+
 	/**
 	 * 
 	 * Callback for registering pages
@@ -164,9 +246,15 @@ class DX_Plugin_Base {
 	 *  
 	 */
 	public function dx_admin_pages_callback() {
-		add_menu_page(__( "Plugin Base Admin", 'dxbase' ), __( "Plugin Base Admin", 'dxbase' ), 'edit_themes', 'dx-plugin-base', array( $this, 'dx_plugin_base' ) );		
-		add_submenu_page( 'dx-plugin-base', __( "Base Subpage", 'dxbase' ), __( "Base Subpage", 'dxbase' ), 'edit_themes', 'dx-base-subpage', array( $this, 'dx_plugin_subpage' ) );
-		add_submenu_page( 'dx-plugin-base', __( "Remote Subpage", 'dxbase' ), __( "Remote Subpage", 'dxbase' ), 'edit_themes', 'dx-remote-subpage', array( $this, 'dx_plugin_side_access_page' ) );
+		add_menu_page(__( "Plugin Base Admin", DXP_TD ), __( "Plugin Base Admin", DXP_TD ), 'edit_themes', 'dx-plugin-base', array( $this, 'dx_plugin_base' ) );		
+		add_submenu_page( 'dx-plugin-base', __( "Base Subpage", DXP_TD ), __( "Base Subpage", DXP_TD ), 'edit_themes', 'dx-base-subpage', array( $this, 'dx_plugin_subpage' ) );
+		add_submenu_page( 'dx-plugin-base', __( "Remote Subpage", DXP_TD ), __( "Remote Subpage", DXP_TD ), 'edit_themes', 'dx-remote-subpage', array( $this, 'dx_plugin_side_access_page' ) );
+		
+		/**
+		 * Add options page
+		 * @todo change me
+		 */
+		add_options_page( __( 'Options of base plugin', DXP_TD ), __( 'Base Plugin options', DXP_TD ), 'manage_options', 'dx_base_plugin_options', array( $this, 'dx_base_plugin_options_cb' ) );
 	}
 	
 	/**
@@ -175,11 +263,28 @@ class DX_Plugin_Base {
 	 * 
 	 */
 	public function dx_plugin_base() {
-		include_once( DXP_PATH_INCLUDES . '/base-page-template.php' );
+		include_once( $this->path_template . 'base-page-template.php' );
 	}
 	
 	public function dx_plugin_side_access_page() {
-		include_once( DXP_PATH_INCLUDES . '/remote-page-template.php' );
+		include_once( $this->path_template . 'remote-page-template.php' );
+	}
+		
+	/**
+	 * Callback for the add options page
+	 * 
+	 * @since 1.7
+	 */
+	public function dx_base_plugin_options_cb() {
+		?>
+			<form id="dx_options_settings_section" action="options.php" method="post">
+				<?php
+					settings_fields( 'dx_options_setting' ); 
+					do_settings_sections( 'dx_base_plugin_options' ); 
+					submit_button(); 
+				?>
+			</form>
+		<?php
 	}
 	
 	/**
@@ -193,8 +298,8 @@ class DX_Plugin_Base {
 	 */
 	public function dx_plugin_subpage() {
 		echo '<div class="wrap">';
-		_e( "<h2>DX Plugin Subpage</h2> ", 'dxbase' );
-		_e( "I'm a subpage and I know it!", 'dxbase' );
+		_e( "<h2>DX Plugin Subpage</h2> ", DXP_TD );
+		_e( "I'm a subpage and I know it!", DXP_TD );
 		echo '</div>';
 	}
 	
@@ -207,7 +312,7 @@ class DX_Plugin_Base {
 		// register side box
 		add_meta_box( 
 		        'dx_side_meta_box',
-		        __( "DX Side Box", 'dxbase' ),
+		        __( "DX Side Box", DXP_TD ),
 		        array( $this, 'dx_side_meta_box' ),
 		        'pluginbase', // leave empty quotes as '' if you want it on all custom post add/edit screens
 		        'side',
@@ -217,7 +322,7 @@ class DX_Plugin_Base {
 		// register bottom box
 		add_meta_box(
 		    	'dx_bottom_meta_box',
-		    	__( "DX Bottom Box", 'dxbase' ), 
+		    	__( "DX Bottom Box", DXP_TD ), 
 		    	array( $this, 'dx_bottom_meta_box' ),
 		    	'' // leave empty quotes as '' if you want it on all custom post add/edit screens or add a post type slug
 		    );
@@ -230,7 +335,7 @@ class DX_Plugin_Base {
 	 * @param metabox $metabox metabox data
 	 */
 	public function dx_side_meta_box( $post, $metabox) {
-		_e("<p>Side meta content here</p>", 'dxbase');
+		_e("<p>Side meta content here</p>", DXP_TD);
 		
 		// Add some test data here - a custom field, that is
 		$dx_test_input = '';
@@ -239,7 +344,7 @@ class DX_Plugin_Base {
 			$dx_test_input = get_post_meta( $post->ID, 'dx_test_input', true );
 		}
 		?>
-		<label for="dx-test-input"><?php _e( 'Test Custom Field', 'dxbase' ); ?></label>
+		<label for="dx-test-input"><?php _e( 'Test Custom Field', DXP_TD ); ?></label>
 		<input type="text" id="dx-test-input" name="dx_test_input" value="<?php echo $dx_test_input; ?>" />
 		<?php
 	}
@@ -276,7 +381,7 @@ class DX_Plugin_Base {
 	 * @param metabox $metabox metabox data
 	 */
 	public function dx_bottom_meta_box( $post, $metabox) {
-		_e( "<p>Bottom meta content here</p>", 'dxbase' );
+		_e( "<p>Bottom meta content here</p>", DXP_TD );
 	}
 	
 	/**
@@ -286,18 +391,18 @@ class DX_Plugin_Base {
 	public function dx_custom_post_types_callback() {
 		register_post_type( 'pluginbase', array(
 			'labels' => array(
-				'name' => __("Base Items", 'dxbase'),
-				'singular_name' => __("Base Item", 'dxbase'),
-				'add_new' => _x("Add New", 'pluginbase', 'dxbase' ),
-				'add_new_item' => __("Add New Base Item", 'dxbase' ),
-				'edit_item' => __("Edit Base Item", 'dxbase' ),
-				'new_item' => __("New Base Item", 'dxbase' ),
-				'view_item' => __("View Base Item", 'dxbase' ),
-				'search_items' => __("Search Base Items", 'dxbase' ),
-				'not_found' =>  __("No base items found", 'dxbase' ),
-				'not_found_in_trash' => __("No base items found in Trash", 'dxbase' ),
+				'name' => __("Base Items", DXP_TD),
+				'singular_name' => __("Base Item", DXP_TD),
+				'add_new' => _x("Add New", 'pluginbase', DXP_TD ),
+				'add_new_item' => __("Add New Base Item", DXP_TD ),
+				'edit_item' => __("Edit Base Item", DXP_TD ),
+				'new_item' => __("New Base Item", DXP_TD ),
+				'view_item' => __("View Base Item", DXP_TD ),
+				'search_items' => __("Search Base Items", DXP_TD ),
+				'not_found' =>  __("No base items found", DXP_TD ),
+				'not_found_in_trash' => __("No base items found in Trash", DXP_TD ),
 			),
-			'description' => __("Base Items for the demo", 'dxbase'),
+			'description' => __("Base Items for the demo", DXP_TD),
 			'public' => true,
 			'publicly_queryable' => true,
 			'query_var' => true,
@@ -326,20 +431,20 @@ class DX_Plugin_Base {
 		register_taxonomy( 'pluginbase_taxonomy', 'pluginbase', array(
 			'hierarchical' => true,
 			'labels' => array(
-				'name' => _x( "Base Item Taxonomies", 'taxonomy general name', 'dxbase' ),
-				'singular_name' => _x( "Base Item Taxonomy", 'taxonomy singular name', 'dxbase' ),
-				'search_items' =>  __( "Search Taxonomies", 'dxbase' ),
-				'popular_items' => __( "Popular Taxonomies", 'dxbase' ),
-				'all_items' => __( "All Taxonomies", 'dxbase' ),
+				'name' => _x( "Base Item Taxonomies", 'taxonomy general name', DXP_TD ),
+				'singular_name' => _x( "Base Item Taxonomy", 'taxonomy singular name', DXP_TD ),
+				'search_items' =>  __( "Search Taxonomies", DXP_TD ),
+				'popular_items' => __( "Popular Taxonomies", DXP_TD ),
+				'all_items' => __( "All Taxonomies", DXP_TD ),
 				'parent_item' => null,
 				'parent_item_colon' => null,
-				'edit_item' => __( "Edit Base Item Taxonomy", 'dxbase' ), 
-				'update_item' => __( "Update Base Item Taxonomy", 'dxbase' ),
-				'add_new_item' => __( "Add New Base Item Taxonomy", 'dxbase' ),
-				'new_item_name' => __( "New Base Item Taxonomy Name", 'dxbase' ),
-				'separate_items_with_commas' => __( "Separate Base Item taxonomies with commas", 'dxbase' ),
-				'add_or_remove_items' => __( "Add or remove Base Item taxonomy", 'dxbase' ),
-				'choose_from_most_used' => __( "Choose from the most used Base Item taxonomies", 'dxbase' )
+				'edit_item' => __( "Edit Base Item Taxonomy", DXP_TD ), 
+				'update_item' => __( "Update Base Item Taxonomy", DXP_TD ),
+				'add_new_item' => __( "Add New Base Item Taxonomy", DXP_TD ),
+				'new_item_name' => __( "New Base Item Taxonomy Name", DXP_TD ),
+				'separate_items_with_commas' => __( "Separate Base Item taxonomies with commas", DXP_TD ),
+				'add_or_remove_items' => __( "Add or remove Base Item taxonomy", DXP_TD ),
+				'choose_from_most_used' => __( "Choose from the most used Base Item taxonomies", DXP_TD )
 			),
 			'show_ui' => true,
 			'query_var' => true,
@@ -356,7 +461,7 @@ class DX_Plugin_Base {
 	 * 
 	 */
 	public function dx_register_settings() {
-		require_once( DXP_PATH . '/dx-plugin-settings.class.php' );
+		require_once( $this->path_include . '/class-dx-plugin-settings.php' );
 		new DX_Plugin_Settings();
 	}
 	
@@ -368,6 +473,9 @@ class DX_Plugin_Base {
 	 */
 	public function dx_sample_shortcode() {
 		add_shortcode( 'dxsampcode', array( $this, 'dx_sample_shortcode_body' ) );
+		add_shortcode( 'dxsampcode_wp_query', array( $this, 'dx_sample_shortcode_wp_query_body' ) );
+		add_shortcode( 'dxsampcode_wp_user_query', array( $this, 'dx_sample_shortcode_wp_user_query_body' ) );
+		add_shortcode( 'dxsampcode_wp_meta_query', array( $this, 'dx_sample_shortcode_wp_meta_query_body' ) );
 	}
 	
 	/**
@@ -379,21 +487,153 @@ class DX_Plugin_Base {
 		/*
 		 * Manage the attributes and the content as per your request and return the result
 		 */
-		return __( 'Sample Output', 'dxbase');
+		ob_start();
+		?>
+		<div class="dx-sample-shortcode-main-wrap">
+			<?php echo do_shortcode( $content );?>
+		</div>
+		<?php 
+		
+		return ob_get_clean();
 	}
+	
+	/**
+	 * Returns the latest posts, using WP_Query
+	 * @param array $attr arguments passed to array, like [dxsampcode_wp_query posts_per_page="10" orderby="title"]
+	 * @param string $content optional, could be used for a content to be a title, such as [dxsampcode_wp_query]somecontnet[/dxsampcode_wp_query]
+	 */
+	public function dx_sample_shortcode_wp_query_body( $attr, $content = null ) {
+		/*
+		 * Manage the attributes and the content as per your request and return the result
+		 */
+		$current_post = get_the_ID();
+		$default = array(
+			'post_type'			=> 'post',
+			'orderby'			=> 'date',
+			'order'				=> 'DESC',
+			'posts_per_page'	=> 3,
+			'post__not_in'		=> array( $current_post ),
+		);
+		$attr = wp_parse_args( $attr, $default );
+		$wp_query = new WP_Query( $attr );			
+		
+		ob_start();
+		?>
+		<?php if( $wp_query->have_posts() ): ?>
+		<div class="dx-sample-shortcode-wp-query">
+			<?php if( !empty( $content ) ):?>
+			<h2><?php echo $content;?></h2>			
+			<?php endif;?>
+			<?php while ( $wp_query->have_posts() ): ?>
+			<?php $wp_query->the_post(); ?>
+			<div class="dx-sample-post">
+				<h3 class="dx-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+				<?php the_content(); ?>
+			</div>
+			<?php endwhile; ?>
+		</div>
+		<?php wp_reset_query(); ?>
+		<?php endif; ?>
+		<?php 		
+		return ob_get_clean();
+	}
+	
+	/**
+	 * Returns the list of the top Users
+	 * @param array $attr arguments passed to array, like [dxsampcode_wp_user_query number="3" orderby="post_count"]
+	 * @param string $content optional, could be used for a content to be wrapped, such as [dxsampcode_wp_user_query]somecontnet[/dxsampcode_wp_user_query]
+	 */
+	public function dx_sample_shortcode_wp_user_query_body( $attr, $content = null ) {
+		/*
+		 * Manage the attributes and the content as per your request and return the result
+		 */
+		$default = array(
+			'orderby'			=> 'post_count',
+			'order'				=> 'DESC',
+			'number'			=> 3,//nubmer of users
+		);
+		$attr = wp_parse_args( $attr, $default );
+		$top_users = new WP_User_Query( $attr );			
+		
+		ob_start();
+		?>
+		<?php if( !empty( $top_users->results ) ): ?>
+		<div class="dx-sample-shortcode-wp-user-query">
+			<?php if( !empty( $content ) ):?>
+			<h2><?php echo $content;?></h2>			
+			<?php endif;?>
+			<ul class="dx-sample--top-users">
+			<?php foreach($top_users->results as $user ): ?>
+				<?php $userdata = get_userdata( $user->ID ); ?>
+				<li><?php echo $user->data->display_name; ?></li>
+			<?php endforeach; ?>
+			</ul>
+		</div>
+		<?php endif; ?>
+		<?php 		
+		return ob_get_clean();
+	}
+	
+	/**
+	 * Returns the posts, that has not empty dx_test_input metabox
+	 * @param array $attr arguments passed to array, like [dxsampcode_wp_meta_query key="one" value="two"]
+	 * @param string $content If not empty will display as title of sectionm, like [dxsampcode_wp_meta_query]somecontnet[/dxsampcode_wp_meta_query]
+	 */
+	public function dx_sample_shortcode_wp_meta_query_body( $attr, $content = null ) {
+		/*
+		 * Manage the attributes and the content as per your request and return the result
+		 */
+		
+		$current_post = get_the_ID();
+		$default = array(
+			'post_type'			=> 'pluginbase',
+			'orderby'			=> 'date',
+			'order'				=> 'DESC',
+			'posts_per_page'	=> 10,
+			'post__not_in'		=> array( $current_post ),
+			'meta_query' => array(
+				array(
+					'key'     => 'dx_test_input',
+					'value'   => array(''),
+					'compare' => 'NOT IN',
+				),
+			),
+		);
+		$attr = wp_parse_args( $attr, $default );
+		$wp_meta_query = new WP_Query( $attr );	
+		
+		ob_start();
+		?>
+		<?php if( $wp_meta_query->have_posts() ): ?>
+		<div class="dx-sample-shortcode-wp-meta-query">
+			<?php if( !empty( $content ) ):?>
+			<h2><?php echo $content;?></h2>			
+			<?php endif;?>
+			<?php while( $wp_meta_query->have_posts() ): ?>
+			<?php $wp_meta_query->the_post(); ?>
+			<div class="dx-sample-post">
+				<h3 class="dx-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+				<?php the_content(); ?>
+			</div>
+			<?php endwhile; ?>
+		</div>
+		<?php endif; ?>
+		<?php 		
+		return ob_get_clean();
+	}	
 	
 	/**
 	 * Hook for including a sample widget with options
 	 */
 	public function dx_sample_widget() {
-		include_once DXP_PATH_INCLUDES . '/dx-sample-widget.class.php';
+		include_once $this->path_include . 'dx-sample-widget.class.php';
 	}
 	
 	/**
 	 * Add textdomain for plugin
 	 */
 	public function dx_add_textdomain() {
-		load_plugin_textdomain( 'dxbase', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+		load_plugin_textdomain( DXP_TD, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 	}
 	
 	/**
@@ -416,7 +656,7 @@ class DX_Plugin_Base {
 			$response = wp_remote_get( $ajax_url );
 			
 			if( is_wp_error( $response ) ) {
-				echo json_encode( __( 'Invalid HTTP resource', 'dxbase' ) );
+				echo json_encode( __( 'Invalid HTTP resource', DXP_TD ) );
 				die();
 			}
 			
@@ -427,7 +667,7 @@ class DX_Plugin_Base {
 				}
 			}
 		}
-		echo json_encode( __( 'No title found or site was not fetched properly', 'dxbase' ) );
+		echo json_encode( __( 'No title found or site was not fetched properly', DXP_TD ) );
 		die();
 	}
 	
@@ -441,6 +681,7 @@ class DX_Plugin_Base {
 function dx_on_activate_callback() {
 	// do something on activation
 }
+register_activation_hook( __FILE__, 'dx_on_activate_callback' );
 
 /**
  * Register deactivation hook
@@ -449,6 +690,16 @@ function dx_on_activate_callback() {
 function dx_on_deactivate_callback() {
 	// do something when deactivated
 }
+register_deactivation_hook( __FILE__, 'dx_on_deactivate_callback' );
+
+/**
+ * Register uninstall hook
+ * 
+ */
+function dx_on_uninstall_callback(){
+	// do something when plugin is uninstalling
+}
+register_uninstall_hook( __FILE__, 'dx_on_uninstall_callback' );
 
 // Initialize everything
 $dx_plugin_base = new DX_Plugin_Base();
