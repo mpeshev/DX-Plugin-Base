@@ -249,6 +249,12 @@ class DX_Plugin_Base {
 		add_menu_page(__( "Plugin Base Admin", DXP_TD ), __( "Plugin Base Admin", DXP_TD ), 'edit_themes', 'dx-plugin-base', array( $this, 'dx_plugin_base' ) );		
 		add_submenu_page( 'dx-plugin-base', __( "Base Subpage", DXP_TD ), __( "Base Subpage", DXP_TD ), 'edit_themes', 'dx-base-subpage', array( $this, 'dx_plugin_subpage' ) );
 		add_submenu_page( 'dx-plugin-base', __( "Remote Subpage", DXP_TD ), __( "Remote Subpage", DXP_TD ), 'edit_themes', 'dx-remote-subpage', array( $this, 'dx_plugin_side_access_page' ) );
+		
+		/**
+		 * Add options page
+		 * @todo change me
+		 */
+		add_options_page( __( 'Options of base plugin', DXP_TD ), __( 'Base Plugin options', DXP_TD ), 'manage_options', 'dx_base_plugin_options', array( $this, 'dx_base_plugin_options_cb' ) );
 	}
 	
 	/**
@@ -262,6 +268,23 @@ class DX_Plugin_Base {
 	
 	public function dx_plugin_side_access_page() {
 		include_once( $this->path_template . 'remote-page-template.php' );
+	}
+		
+	/**
+	 * Callback for the add options page
+	 * 
+	 * @since 1.7
+	 */
+	public function dx_base_plugin_options_cb() {
+		?>
+			<form id="dx_options_settings_section" action="options.php" method="post">
+				<?php
+					settings_fields( 'dx_options_setting' ); 
+					do_settings_sections( 'dx_base_plugin_options' ); 
+					submit_button(); 
+				?>
+			</form>
+		<?php
 	}
 	
 	/**

@@ -45,6 +45,31 @@ class DX_Plugin_Settings {
 			'dx-plugin-base',                          // The page on which this option will be displayed
 			'dx_settings_section'         // The name of the section to which this field belongs
 		);
+		//options page settings
+		register_setting( 'dx_options_setting', 'dx_options_setting', array( $this, 'dx_options_settings_validate' ) );
+		add_settings_section(
+			'dx_options_settings_section',         // ID used to identify this section and with which to register options
+			__( "Plugin Base Options", DXP_TD ),                  // Title to be displayed on the administration page
+			array( $this, 'dx_options_settings_callback' ), // Callback used to render the description of the section
+			'dx_base_plugin_options'                           // Page on which to add this section of options
+		);
+	
+		add_settings_field(
+			'dx_options_checkbox',                      // ID used to identify the field throughout the theme
+			__( "Checkbox: ", DXP_TD ),                           // The label to the left of the option interface element
+			array( $this, 'dx_options_checkbox_callback' ),   // The name of the function responsible for rendering the option interface
+			'dx_base_plugin_options',                          // The page on which this option will be displayed
+			'dx_options_settings_section'         // The name of the section to which this field belongs
+		);
+		
+		add_settings_field(
+			'dx_options_text',                      // ID used to identify the field throughout the theme
+			__( "DX Sample: ", DXP_TD ),                           // The label to the left of the option interface element
+			array( $this, 'dx_options_text_callback' ),   // The name of the function responsible for rendering the option interface
+			'dx_base_plugin_options',                          // The page on which this option will be displayed
+			'dx_options_settings_section'         // The name of the section to which this field belongs
+		);
+		
 	}
 	
 	public function dx_settings_callback() {
@@ -110,6 +135,35 @@ class DX_Plugin_Settings {
 	 * @param array $input
 	 */
 	public function dx_validate_settings( $input ) {
+		array_walk_recursive($input, function( &$item, $key ){//senitizy the user input before saving to the DB
+			$item = esc_attr( $item );
+		});
+		return $input;
+	}
+		
+	public function dx_options_settings_callback() {
+		_e( 'Options page settings', DXP_TD );
+	}
+	
+	public function dx_options_checkbox_callback() {
+		$dx_options_setting = get_option( 'dx_options_setting' );
+		$checkbox = !empty( $dx_options_setting['dx_options_checkbox'] )? $dx_options_setting['dx_options_checkbox'] : '';
+		?>
+		<input type="checkbox" id="dx_options_checkbox" name="dx_options_setting[dx_options_checkbox]" value="1" <?php checked( 1, $checkbox ); ?> />
+		<label for="dx_options_checkbox"><?php _e( 'Checkbox description', DXP_TD ); ?></label>
+		<?php 
+	}
+	
+	public function dx_options_text_callback() {
+		$dx_options_setting = get_option( 'dx_options_setting' );
+		$text = !empty( $dx_options_setting['dx_options_text'] )? $dx_options_setting['dx_options_text'] : '';
+		?>
+		<input type="text" id="dx_options_text" name="dx_options_setting[dx_options_text]" value="<?php esc_attr_e( $text ); ?>" />
+		<label for="dx_options_text"><?php _e( 'Text input description', DXP_TD ); ?></label>
+		<?php 
+	}	
+	
+	public function dx_options_settings_validate( $input ) {
 		array_walk_recursive($input, function( &$item, $key ){//senitizy the user input before saving to the DB
 			$item = esc_attr( $item );
 		});
